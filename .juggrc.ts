@@ -1,7 +1,7 @@
 import { extendConfig } from '@axew/jugg';
-import * as HtmlWebpackPlugin from 'html-webpack-plugin';
-import * as CopyPlugin from 'copy-webpack-plugin';
-import * as WriteFilePlugin from 'write-file-webpack-plugin';
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const CopyPlugin = require('copy-webpack-plugin');
+const WriteFilePlugin = require('write-file-webpack-plugin');
 const pkg = require('./package.json');
 
 export default extendConfig({
