@@ -16,10 +16,10 @@
     babel-plugin-react-require "^3.0.1"
     babel-plugin-transform-react-remove-prop-types "^0.4.21"
 
-"@axew/jugg@0.0.22":
-  version "0.0.22"
-  resolved "https://registry.npm.taobao.org/@axew/jugg/download/@axew/jugg-0.0.22.tgz#0484c060b376e1e3cb53ce869dd10f4763e0528e"
-  integrity sha1-BITAYLN24ePLU86GndEPR2PgUo4=
+"@axew/jugg@0.0.24":
+  version "0.0.24"
+  resolved "https://registry.npm.taobao.org/@axew/jugg/download/@axew/jugg-0.0.24.tgz#f31f3d95249961940da707abe5374e30879c0f3a"
+  integrity sha1-8x89lSSZYZQNpwer5TdOMIecDzo=
   dependencies:
     "@types/webpack" "^4.4.21"
     "@types/webpack-chain" "^5.0.0"
@@ -782,6 +782,13 @@
     "@types/connect" "*"
     "@types/node" "*"
 
+"@types/chrome@^0.0.86":
+  version "0.0.86"
+  resolved "https://registry.npm.taobao.org/@types/chrome/download/@types/chrome-0.0.86.tgz#1026ef8e76db4fde1859cae858d73236fe670d69"
+  integrity sha1-ECbvjnbbT94YWcroWNcyNv5nDWk=
+  dependencies:
+    "@types/filesystem" "*"
+
 "@types/connect-history-api-fallback@*":
   version "1.3.2"
   resolved "https://registry.npm.taobao.org/@types/connect-history-api-fallback/download/@types/connect-history-api-fallback-1.3.2.tgz#40a497500238ebf30ae28fdf687c2f92969f2635"
@@ -818,6 +825,18 @@
     "@types/body-parser" "*"
     "@types/express-serve-static-core" "*"
     "@types/serve-static" "*"
+
+"@types/filesystem@*":
+  version "0.0.29"
+  resolved "https://registry.npm.taobao.org/@types/filesystem/download/@types/filesystem-0.0.29.tgz#ee3748eb5be140dcf980c3bd35f11aec5f7a3748"
+  integrity sha1-7jdI61vhQNz5gMO9NfEa7F96N0g=
+  dependencies:
+    "@types/filewriter" "*"
+
+"@types/filewriter@*":
+  version "0.0.28"
+  resolved "https://registry.npm.taobao.org/@types/filewriter/download/@types/filewriter-0.0.28.tgz#c054e8af4d9dd75db4e63abc76f885168714d4b3"
+  integrity sha1-wFTor02d11205jq8dviFFocU1LM=
 
 "@types/glob@^7.1.1":
   version "7.1.1"

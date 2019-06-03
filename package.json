@@ -1,10 +1,10 @@
 {
-  "name": "insert-code",
+  "name": "inject-code",
   "version": "0.0.1",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "jugg dev",
+    "dev": "jugg dev --noDevClients",
     "build": "HARD_SOURCE=none jugg build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -12,8 +12,9 @@
   "author": "daief",
   "license": "MIT",
   "devDependencies": {
-    "@axew/jugg": "0.0.22",
+    "@axew/jugg": "0.0.24",
     "@axew/jugg-plugin-react": "0.0.9",
+    "@types/chrome": "^0.0.86",
     "@types/react": "^16.8.19",
     "@types/react-dom": "^16.8.4",
     "copy-webpack-plugin": "^5.0.3",
