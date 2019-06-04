@@ -1,8 +1,8 @@
 {
-  "name": "Insert code",
   "options_page": "options.html",
   "background": {
-    "page": "background.html"
+    "page": "background.html",
+    "persistent": false
   },
   "browser_action": {
     "default_popup": "popup.html",
@@ -12,6 +12,19 @@
     "128": "icon-128.png"
   },
   "manifest_version": 2,
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
+      "run_at": "document_start"
+    }
+  ],
   "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
-  "permissions": ["storage"]
+  "permissions": [
+    "storage",
+    "declarativeContent",
+    "activeTab",
+    "https://*/*",
+    "http://*/*"
+  ]
 }

@@ -23,6 +23,11 @@ export default extendConfig({
   webpack: ({ config }) => {
     config.entryPoints.clear().end();
 
+    config
+      .entry('content')
+      .add(`./src/content`)
+      .end();
+
     ['background', 'options', 'popup'].forEach(name => {
       config
         .entry(name)
@@ -46,12 +51,13 @@ export default extendConfig({
           { from: 'public' },
           {
             from: 'public/manifest.json',
-            transform: function(content, path) {
+            transform(content) {
               // generates the manifest file using the package.json informations
               return Buffer.from(
                 JSON.stringify({
                   description: pkg.description,
                   version: pkg.version,
+                  name: pkg.displayName,
                   ...JSON.parse(content.toString()),
                 }),
               );
@@ -70,4 +76,5 @@ export default extendConfig({
     };
   },
   html: false,
+  filename: '[name]',
 });
