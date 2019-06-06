@@ -12,6 +12,9 @@ export function getInstance(): IDatasource {
 }
 
 export interface IDatasource {
-  getFileSetList(query?: { status: STATUS }): Promise<FileSetWithRule[]>;
+  clearAll(): Promise<{}>;
+  getFileSetList(query?: { status?: STATUS }): Promise<FileSetWithRule[]>;
   getSourceFileListByIds(id: ID | ID[]): Promise<SourceFile[]>;
+
+  addNewFileSet(fileSet: FileSet): Promise<ID>;
 }

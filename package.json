@@ -6,8 +6,9 @@
   "main": "index.js",
   "scripts": {
     "dev": "jugg dev --noDevClients",
+    "prebuild": "yarn test",
     "build": "HARD_SOURCE=none jugg build",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
   },
   "keywords": [],
   "author": "daief",
@@ -17,15 +18,19 @@
     "@axew/jugg-plugin-react": "0.0.9",
     "@hot-loader/react-dom": "^16.8.6",
     "@types/chrome": "^0.0.86",
+    "@types/jest": "^24.0.13",
     "@types/react": "^16.8.19",
     "@types/react-dom": "^16.8.4",
     "@types/react-router-dom": "^4.3.3",
     "copy-webpack-plugin": "^5.0.3",
     "husky": "^2.3.0",
+    "indexeddbshim": "^4.1.0",
+    "jest": "^24.8.0",
     "lint-staged": "^8.1.7",
     "prettier": "^1.17.1",
     "react-hot-loader": "^4.9.0",
     "ts-import-plugin": "^1.5.5",
+    "ts-jest": "^24.0.2",
     "tslint": "^5.17.0",
     "typescript": "^3.5.1",
     "write-file-webpack-plugin": "^4.5.0"

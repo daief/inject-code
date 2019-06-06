@@ -33,7 +33,7 @@ export enum MATCH_TYPE {
 
 export interface Rule {
   id: ID;
-  FilesSetId: ID;
+  filesSetId: ID;
   regexContent: string;
   status: STATUS;
   matchType: MATCH_TYPE;
@@ -44,7 +44,7 @@ export interface FileSet {
   name: string;
   sourceFileIds: ID[];
   status: STATUS;
-  ruleIds: string[];
+  ruleIds: ID[];
 }
 
 export type FileSetWithRule = FileSet & {
