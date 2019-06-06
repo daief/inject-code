@@ -4,9 +4,11 @@ const CopyPlugin = require('copy-webpack-plugin');
 const WriteFilePlugin = require('write-file-webpack-plugin');
 const pkg = require('./package.json');
 
+const IS_PROD = process.env.NODE_ENV === 'production';
+
 export default extendConfig({
   sourceMap: false,
-  publicPath: process.env.NODE_ENV === 'production' ? './' : '/',
+  publicPath: IS_PROD ? './' : '/',
   tsCustomTransformers: {
     before: [
       // [
@@ -68,6 +70,12 @@ export default extendConfig({
       .end()
       .plugin('write-file')
       .use(WriteFilePlugin);
+
+    if (!IS_PROD) {
+      config.resolve.alias.merge({
+        'react-dom': '@hot-loader/react-dom',
+      });
+    }
 
     return {
       devServer: {
