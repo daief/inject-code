@@ -14,7 +14,7 @@
   "author": "daief",
   "license": "MIT",
   "devDependencies": {
-    "@axew/jugg": "0.0.24",
+    "@axew/jugg": "0.1.0-alpha.0",
     "@axew/jugg-plugin-react": "0.0.9",
     "@hot-loader/react-dom": "^16.8.6",
     "@types/chrome": "^0.0.86",
@@ -38,6 +38,7 @@
   "dependencies": {
     "@rematch/core": "^1.1.0",
     "@rematch/loading": "^1.1.3",
+    "antd": "^3.19.2",
     "dexie": "^2.0.4",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",

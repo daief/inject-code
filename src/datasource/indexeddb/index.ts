@@ -1,15 +1,13 @@
+import { MissingError } from '@/common/MisingError';
 import {
   FileSet,
   FileSetWithRule,
   ID,
-  MATCH_TYPE,
   Rule,
-  RUN_AT,
-  SOURCE_TYPE,
   SourceFile,
   STATUS,
 } from '@/interfaces/entities';
-import { PartialId, PartialKeys } from '@/interfaces/utils';
+import { PartialKeys } from '@/interfaces/utils';
 import Dexie from 'dexie';
 import { IDatasource } from '../api';
 
@@ -94,6 +92,21 @@ export class InsertCodeDB extends Dexie implements IDatasource {
       sourceFileIds: [],
       ...fileSet,
     });
+  }
+
+  public async updateFileSet(fileSet: FileSet) {
+    const { id, ...rest } = fileSet;
+    if (!id) {
+      throw new MissingError();
+    }
+    return this.TableFileSet.update(id, { ...rest });
+  }
+
+  public async deleteFileSet(id: ID) {
+    if (!id) {
+      throw new MissingError();
+    }
+    return this.TableFileSet.delete(id);
   }
 
   public clearAll() {

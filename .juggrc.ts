@@ -11,14 +11,14 @@ export default extendConfig({
   publicPath: IS_PROD ? './' : '/',
   tsCustomTransformers: {
     before: [
-      // [
-      //   'ts-import-plugin',
-      //   {
-      //     libraryDirectory: 'lib',
-      //     libraryName: 'antd',
-      //     style: true,
-      //   },
-      // ],
+      [
+        'ts-import-plugin',
+        {
+          libraryDirectory: 'lib',
+          libraryName: 'antd',
+          style: true,
+        },
+      ],
       '@axew/jugg-plugin-react/lib/ts-rhl-transformer',
     ],
   },
@@ -77,6 +77,10 @@ export default extendConfig({
       });
     }
 
+    config.resolve.alias.merge({
+      '@ant-design/icons/lib/dist$': '@/antdIcon',
+    });
+
     return {
       devServer: {
         port: 4000,
@@ -85,4 +89,17 @@ export default extendConfig({
   },
   html: false,
   filename: '[name]',
+  css: {
+    loaderOptions: {
+      css: {},
+      less: {
+        modifyVars: {
+          'primary-color': '#66ccff',
+          'link-color': '#66ccff',
+          'border-radius-base': '2px',
+        },
+      },
+      postcss: {},
+    },
+  },
 });

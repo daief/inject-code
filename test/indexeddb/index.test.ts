@@ -1,3 +1,6 @@
+/**
+ * try some simple unit testing for practice
+ */
 import { getInstance } from '@/datasource/api';
 import { InsertCodeDB } from '@/datasource/indexeddb';
 import {

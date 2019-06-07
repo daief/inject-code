@@ -5,6 +5,7 @@ import {
   SourceFile,
   STATUS,
 } from '@/interfaces/entities';
+import { PartialKeys } from '@/interfaces/utils';
 import { InsertCodeDB } from '../indexeddb';
 
 export function getInstance(): IDatasource {
@@ -16,5 +17,12 @@ export interface IDatasource {
   getFileSetList(query?: { status?: STATUS }): Promise<FileSetWithRule[]>;
   getSourceFileListByIds(id: ID | ID[]): Promise<SourceFile[]>;
 
-  addNewFileSet(fileSet: FileSet): Promise<ID>;
+  addNewFileSet(
+    fileSet: PartialKeys<
+      FileSet,
+      'id' | 'ruleIds' | 'sourceFileIds' | 'status'
+    >,
+  ): Promise<ID>;
+  updateFileSet(fileSet: PartialKeys<FileSet, 'id'>): Promise<number>;
+  deleteFileSet(id: ID): Promise<void>;
 }

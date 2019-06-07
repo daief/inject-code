@@ -1,11 +1,22 @@
 .wrap {
-  display: grid;
-  grid-template-columns: 256px auto;
-  height: 100%;
+  min-height: 100%;
+  background-color: #fff;
 }
 
-.left {
+.header {
+  background: unset;
+  position: 'fixed';
+  z-index: 1;
+  width: '100%';
 }
 
-.right {
+.menu {
+  line-height: 64px;
+  background: unset;
+}
+
+.content {
+  margin: 20px 50px;
+  background-color: fade(#fff, 30%);
+  border-radius: @border-radius-base;
 }
