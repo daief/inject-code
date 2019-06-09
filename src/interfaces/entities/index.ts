@@ -50,3 +50,8 @@ export interface FileSet {
 export type FileSetWithRule = FileSet & {
   ruleList: Rule[];
 };
+
+export type FileSetDetail = FileSet & {
+  ruleList: Rule[];
+  sourceFileList: SourceFile[];
+};

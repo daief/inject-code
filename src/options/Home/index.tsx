@@ -1,6 +1,13 @@
-import { FileSetWithRule, SOURCE_TYPE, STATUS } from '@/interfaces/entities';
+import { hashHistory } from '@/components/options/RouterLayout';
+import {
+  FileSetWithRule,
+  ID,
+  SOURCE_TYPE,
+  STATUS,
+} from '@/interfaces/entities';
 import { AnyFunc } from '@/interfaces/utils';
 import {
+  Alert,
   Badge,
   Card,
   Col,
@@ -17,6 +24,7 @@ import * as React from 'react';
 import { useMappedState } from 'redux-react-hook';
 import { useStore } from '../store';
 import * as styles from './index.module.less';
+import { TopBar } from './TopBar';
 
 const { useCallback } = React;
 
@@ -53,15 +61,20 @@ export const Home: React.SFC = React.memo(() => {
     dispatch.all.deleteFileSet(item);
   };
 
+  const pushToDetail = (id: ID) => () => {
+    hashHistory.push(`/set-detail?id=${id}`);
+  };
+
   return (
     <>
+      <TopBar />
       <List
         grid={{ gutter: 16, column: 4 }}
         dataSource={fileSetList}
         rowKey="id"
         loading={listLoading}
         renderItem={item => {
-          const { sourceFileIds, ruleIds, status, name } = item;
+          const { id, sourceFileIds, ruleIds, status, name } = item;
           const badgeStatus = {
             [STATUS.DISABLE]: 'default',
             [STATUS.ENABLE]: 'processing',
@@ -70,13 +83,14 @@ export const Home: React.SFC = React.memo(() => {
             <List.Item className={`${styles.item} ${badgeStatus}`}>
               <Card
                 hoverable
+                onClick={pushToDetail(id)}
                 actions={[
                   <Switch
                     key="1"
                     checked={status === STATUS.ENABLE}
                     onChange={handleSwitchStatusChange(item)}
                   />,
-                  <Icon key="2" type="edit" />,
+                  <Icon key="2" type="edit" onClick={pushToDetail(id)} />,
                   <Popconfirm
                     key="3"
                     title={'Are you sure to delete?'}
@@ -109,6 +123,9 @@ export const Home: React.SFC = React.memo(() => {
                     <Statistic title={'Rules'} value={ruleIds.length} />
                   </Col>
                 </Row>
+                {!ruleIds.length && (
+                  <Alert message="Warning" type="warning" showIcon />
+                )}
               </Card>
             </List.Item>
           );

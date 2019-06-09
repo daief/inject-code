@@ -5,11 +5,13 @@ import * as React from 'react';
 import { StoreContext } from 'redux-react-hook';
 import { all } from './all';
 import { background } from './background';
+import { options } from './options';
 import { createInjectCtxPlugin } from './plugins/injectCtx';
 
 const models = {
   all,
   background,
+  options,
 };
 
 type IDispatch = { [k in keyof typeof models]: any } | ((payload: any) => any);

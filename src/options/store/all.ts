@@ -17,9 +17,6 @@ export const all = extendModel<{
         this.setState({ fileSetList: list });
         return list;
       },
-      async addNewFileSet(payload, _, { $db }) {
-        return $db.addNewFileSet(payload);
-      },
       async updateFileSet(payload, _, { $db }) {
         const { fileSetList } = _.all;
         const count = await $db.updateFileSet(payload);

@@ -3,6 +3,7 @@ import {
   FileSet,
   FileSetWithRule,
   ID,
+  MATCH_TYPE,
   Rule,
   SourceFile,
   STATUS,
@@ -85,12 +86,24 @@ export class InsertCodeDB extends Dexie implements IDatasource {
       'id' | 'ruleIds' | 'sourceFileIds' | 'status'
     >,
   ) {
-    // @ts-ignore
+    // @ts-ignore id optional
     return this.tableFileSet.add({
       status: STATUS.ENABLE,
       ruleIds: [],
       sourceFileIds: [],
       ...fileSet,
+    });
+  }
+
+  public async addNewRule(
+    rule: PartialKeys<Rule, 'status' | 'regexContent' | 'id' | 'matchType'>,
+  ) {
+    // @ts-ignore id optional
+    return this.tableRule.add({
+      matchType: MATCH_TYPE.DOMAIN,
+      regexContent: '',
+      status: STATUS.ENABLE,
+      ...rule,
     });
   }
 

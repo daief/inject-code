@@ -1,16 +1,14 @@
 import { Home } from '@/options/Home';
+import { SetDetail } from '@/options/SetDetail';
 import { Button, Icon, Layout, Menu } from 'antd';
+import { createHashHistory } from 'history';
 import * as React from 'react';
-import {
-  HashRouter as Router,
-  Link,
-  Route,
-  Switch,
-  withRouter,
-} from 'react-router-dom';
+import { Link, Route, Router, Switch, withRouter } from 'react-router-dom';
 import * as styles from './style.module.less';
 
-const { Header, Content, Footer } = Layout;
+export const hashHistory = createHashHistory();
+
+const { Header, Content } = Layout;
 
 interface RouteConfg {
   name?: string;
@@ -31,6 +29,10 @@ const routes: RouteConfg[] = [
     path: '/',
     component: Home,
   },
+  {
+    path: '/set-detail',
+    component: SetDetail,
+  },
 ];
 
 const menus: MenuConfig[] = [
@@ -40,8 +42,8 @@ const menus: MenuConfig[] = [
   },
 ];
 
-const CustomHeader = withRouter(({ history }) => {
-  const { pathname } = history.location;
+const CustomHeader = withRouter(({ history: h }) => {
+  const { pathname } = h.location;
   const [selectedKeys, setSelectedKeys] = React.useState<string[]>([]);
   React.useEffect(() => {
     setSelectedKeys([pathname]);
@@ -88,7 +90,7 @@ const CustomHeader = withRouter(({ history }) => {
 
 export const RouterLayout: React.SFC = () => {
   return (
-    <Router>
+    <Router history={hashHistory}>
       <Layout className={styles.wrap}>
         <CustomHeader />
         <Content className={styles.content}>

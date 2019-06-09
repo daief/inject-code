@@ -15,4 +15,5 @@ export {
   DeleteOutline,
   ExclamationOutline,
   ExclamationCircleFill,
+  SearchOutline,
 } from '@ant-design/icons';
