@@ -1,6 +1,10 @@
 import { renderOptions } from '@/common/comptsHelper';
 import { useForceUpdate } from '@/common/hooks';
-import { NEW_THING_ID_PREFIX_MARK, removeIndex } from '@/common/utils';
+import {
+  getHashQuery,
+  NEW_THING_ID_PREFIX_MARK,
+  removeIndex,
+} from '@/common/utils';
 import {
   FileSetDetail,
   MATCH_TYPE,
@@ -53,8 +57,9 @@ export const SetDetail: React.SFC<{}> = props => {
     // window.addEventListener('beforeunload', e => {
     //   e.returnValue = true
     // });
-    // TODO id
-    dispatch.options.getFileSetDetail({ id: 3 }).then(d => setDetail(d));
+    dispatch.options
+      .getFileSetDetail({ id: +getHashQuery('id') })
+      .then(d => setDetail(d));
   }, []);
 
   // ------------------------------------------------------------ event handlers
@@ -155,11 +160,13 @@ export const SetDetail: React.SFC<{}> = props => {
         </Col>
         <Col span={12}>
           <Form.Item label="Actions">
-            <Button onClick={handleAddNewRuleOfSet}>Add new rule</Button>
-            <Button onClick={handleAddNewFileOfSet}>Add new file</Button>
-            <Button type="primary" onClick={handleSave}>
-              Save
-            </Button>
+            <Button.Group>
+              <Button onClick={handleAddNewRuleOfSet}>Add new rule</Button>
+              <Button onClick={handleAddNewFileOfSet}>Add new file</Button>
+              <Button type="primary" onClick={handleSave}>
+                Save
+              </Button>
+            </Button.Group>
           </Form.Item>
         </Col>
       </Row>
@@ -190,7 +197,7 @@ export const SetDetail: React.SFC<{}> = props => {
                   flex: 1,
                 }}
               />
-              <Button type="dashed" onClick={handleClickDeleteRule(ruleId)}>
+              <Button type="danger" onClick={handleClickDeleteRule(ruleId)}>
                 <Icon type="delete" />
               </Button>
             </List.Item>

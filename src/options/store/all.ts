@@ -12,8 +12,8 @@ export const all = extendModel<{
   effects: dispatch => {
     return {
       async getFileSetList(payload = {}, rootState, { $db }) {
-        const { status } = payload;
-        const list = await $db.getFileSetList({ status });
+        const { status, name } = payload;
+        const list = await $db.getFileSetList({ status, name });
         this.setState({ fileSetList: list });
         return list;
       },

@@ -16,4 +16,5 @@ export {
   ExclamationOutline,
   ExclamationCircleFill,
   SearchOutline,
+  CloseCircleFill,
 } from '@ant-design/icons';

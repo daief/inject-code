@@ -54,12 +54,30 @@ export class InsertCodeDB extends Dexie implements IDatasource {
 
   public async getFileSetList(query?: {
     status?: STATUS;
+    name?: string;
   }): Promise<FileSetWithRule[]> {
-    const { status } = { status: '', ...query };
-    const setList: FileSetWithRule[] = (await (status
-      ? this.tableFileSet.where({ status })
-      : this.tableFileSet
-    ).toArray()) as any;
+    query = { status: undefined, name: '', ...query };
+
+    const getRegex = str => (str ? new RegExp(str, 'ig') : false);
+
+    const keys = Object.keys(query);
+    const regexMap: Record<string, false | RegExp> = {};
+    keys.map(key => (regexMap[key] = getRegex(query[key])));
+
+    const setList: FileSetWithRule[] = (await this.tableFileSet
+      .filter(row => {
+        let flag = true;
+        for (const key of keys) {
+          // @ts-ignore
+          flag = regexMap[key] ? regexMap[key].test(row[key]) : true;
+
+          if (flag === false) {
+            return false;
+          }
+        }
+        return flag;
+      })
+      .toArray()) as any;
 
     await Promise.all(
       setList.map(async fileSet => {

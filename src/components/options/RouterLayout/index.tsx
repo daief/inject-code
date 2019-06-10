@@ -21,6 +21,7 @@ interface MenuConfig {
   path: string;
   icon?: string;
   render?: React.ComponentType;
+  activePaths?: string[];
   children?: MenuConfig[];
 }
 
@@ -39,6 +40,7 @@ const menus: MenuConfig[] = [
   {
     name: 'home',
     path: '/',
+    activePaths: ['/', '/set-detail'],
   },
 ];
 
@@ -46,7 +48,11 @@ const CustomHeader = withRouter(({ history: h }) => {
   const { pathname } = h.location;
   const [selectedKeys, setSelectedKeys] = React.useState<string[]>([]);
   React.useEffect(() => {
-    setSelectedKeys([pathname]);
+    const targetItem = menus.find(
+      _ => _.path === pathname || (_.activePaths || []).includes(pathname),
+    );
+    // default '/'
+    setSelectedKeys([targetItem ? targetItem.path : '/']);
   }, [pathname]);
 
   return (
@@ -58,7 +64,7 @@ const CustomHeader = withRouter(({ history: h }) => {
         selectedKeys={selectedKeys}
       >
         {menus.map(function traverse(item) {
-          const { name, path, icon, render: R, children } = item;
+          const { name, path, icon, render: CustomRender, children } = item;
           const hasNotEmptyChildren = children && children.length;
           const defaultRenderText = (
             <>
@@ -66,9 +72,10 @@ const CustomHeader = withRouter(({ history: h }) => {
               {name}
             </>
           );
-          const renderItem = R ? (
-            <R />
+          const renderItem = CustomRender ? (
+            <CustomRender />
           ) : hasNotEmptyChildren ? (
+            // has children can not be clicked
             defaultRenderText
           ) : (
             <Link to={path}>{defaultRenderText}</Link>
