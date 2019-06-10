@@ -5,6 +5,7 @@ import {
   ID,
   MATCH_TYPE,
   Rule,
+  RUN_AT,
   SourceFile,
   STATUS,
 } from '@/interfaces/entities';
@@ -102,6 +103,18 @@ export class InsertCodeDB extends Dexie implements IDatasource {
     return this.tableRule.add({
       matchType: MATCH_TYPE.DOMAIN,
       regexContent: '',
+      status: STATUS.ENABLE,
+      ...rule,
+    });
+  }
+
+  public async addNewSourceFile(
+    rule: PartialKeys<SourceFile, 'status' | 'content' | 'id' | 'runAt'>,
+  ) {
+    // @ts-ignore id optional
+    return this.tableSourceFile.add({
+      runAt: RUN_AT.DOCUMENT_IDLE,
+      content: '',
       status: STATUS.ENABLE,
       ...rule,
     });

@@ -1,7 +1,15 @@
 import { Log } from '@/common/log';
 import { NEW_THING_ID_PREFIX_MARK_REGEX } from '@/common/utils';
 import { hashHistory } from '@/components/options/RouterLayout';
-import { FileSetDetail, MATCH_TYPE, Rule, STATUS } from '@/interfaces/entities';
+import {
+  FileSetDetail,
+  MATCH_TYPE,
+  Rule,
+  RUN_AT,
+  SOURCE_TYPE,
+  SourceFile,
+  STATUS,
+} from '@/interfaces/entities';
 import { extendModel } from '@/interfaces/rematch';
 import { PartialId } from '@/interfaces/utils';
 
@@ -85,11 +93,40 @@ export const options = extendModel<{
           ),
         ]);
 
+        // insert & update source file list
+        const updatePartialFileList: SourceFile[] = [];
+        const insertPartialFileList: Array<PartialId<SourceFile>> = [];
+        sourceFileList.forEach(f => {
+          const { id: rid, ...rest } = f;
+          if (NEW_THING_ID_PREFIX_MARK_REGEX.test(rid + '')) {
+            insertPartialFileList.push(rest);
+          } else {
+            updatePartialFileList.push(f);
+          }
+        });
+        const [, newFileIds] = await Promise.all([
+          Promise.all(
+            updatePartialFileList.map(async f => {
+              return $db.TableSourceFile.update(+f.id, { ...f });
+            }),
+          ),
+          Promise.all(
+            insertPartialFileList.map(async f => {
+              return $db.addNewSourceFile(f);
+            }),
+          ),
+        ]);
+
         payload.ruleList = [
           ...updatePartial,
           ...insertPartial.map((r, i) => ({ ...r, id: newRuleIds[i] })),
         ];
         payload.ruleIds = payload.ruleList.map(r => r.id);
+        payload.sourceFileList = [
+          ...updatePartialFileList,
+          ...insertPartialFileList.map((f, i) => ({ ...f, id: newFileIds[i] })),
+        ];
+        payload.sourceFileIds = payload.sourceFileList.map(f => f.id);
 
         await $db.updateFileSet({
           id,
@@ -121,4 +158,15 @@ export const options = extendModel<{
 export const MATCH_TYPE_OPTIONS = () => [
   [MATCH_TYPE.ALL, 'Match all'],
   [MATCH_TYPE.DOMAIN, 'Match domain'],
+];
+
+export const SOURCE_TYPE_OPTIONS = () => [
+  [SOURCE_TYPE.CSS, 'CSS'],
+  [SOURCE_TYPE.JS, 'JS'],
+];
+
+export const RUN_AT_OPTIONS = () => [
+  [RUN_AT.DOCUMENT_IDLE, 'idle'],
+  [RUN_AT.DOCUMENT_START, 'document start'],
+  [RUN_AT.DOCUMENT_END, 'document end'],
 ];
