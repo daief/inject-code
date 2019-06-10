@@ -3,7 +3,6 @@ import { SOURCE_TYPE, SourceFile } from '@/interfaces/entities';
 import { store } from '@/options/store';
 
 export async function handlePageOpenMsg(
-  // tslint:disable-next-line: variable-name
   _data: Message,
   sender: chrome.runtime.MessageSender,
 ) {

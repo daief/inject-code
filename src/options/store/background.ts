@@ -23,9 +23,10 @@ export const background = extendModel<{}>({
         const sourceFileIds: ID[] = fileSetList
           .filter(({ ruleList }) => {
             let flag = false;
+            // as long as one rule is matched, inject all code of the set
             for (const rule of ruleList) {
               const { regexContent, status, matchType } = rule;
-              if (status === STATUS.ENABLE) {
+              if (status === STATUS.ENABLE && regexContent) {
                 const regex = new RegExp(regexContent, 'ig');
                 switch (matchType) {
                   case MATCH_TYPE.ALL:
