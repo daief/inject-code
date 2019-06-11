@@ -64,28 +64,40 @@ describe('indexeddb', () => {
       done();
     });
 
-    it('getFileSetList - with param `status`', async done => {
+    it('getFileSetList - with param `status` & `name`', async done => {
       const set1: FileSet = {
         id: 1,
-        name: 'name',
+        name: 'name1',
         sourceFileIds: [],
         status: STATUS.DISABLE,
         ruleIds: [],
       };
       const set2: FileSet = {
         id: 2,
-        name: 'name',
+        name: 'name2',
         sourceFileIds: [],
         status: STATUS.DISABLE,
         ruleIds: [],
       };
       await Promise.all([db.TableFileSet.add(set1), db.TableFileSet.add(set2)]);
-      const [enableResult, disableResult] = await Promise.all([
+      const [
+        enableResult,
+        disableResult,
+        withNameList1,
+        withNameList2,
+        withNameList3,
+      ] = await Promise.all([
         db.getFileSetList({ status: STATUS.ENABLE }),
         db.getFileSetList({ status: STATUS.DISABLE }),
+        db.getFileSetList({ status: STATUS.ENABLE, name: 'name1' }),
+        db.getFileSetList({ status: STATUS.DISABLE, name: 'name1' }),
+        db.getFileSetList({ name: 'name' }),
       ]);
       expect(enableResult.length).toBe(0);
       expect(disableResult.length).toBe(2);
+      expect(withNameList1.length).toBe(0);
+      expect(withNameList2.length).toBe(1);
+      expect(withNameList3.length).toBe(2);
       done();
     });
 
