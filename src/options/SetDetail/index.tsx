@@ -14,19 +14,24 @@ import {
   SourceFile,
   STATUS,
 } from '@/interfaces/entities';
+import { AnyFunc } from '@/interfaces/utils';
 import {
+  Affix,
   Button,
   Col,
+  Dropdown,
   Empty,
   Form,
   Icon,
   Input,
   List,
+  Menu,
   Row,
   Select,
   Spin,
 } from 'antd';
 import * as React from 'react';
+import { useMappedState } from 'redux-react-hook';
 import { useStore } from '../store';
 import {
   MATCH_TYPE_OPTIONS,
@@ -36,8 +41,21 @@ import {
 
 const { useEffect, useState, useCallback } = React;
 
+const mapState = () =>
+  useCallback<
+    AnyFunc<{
+      saveLoading: boolean;
+    }>
+  >(
+    _ => ({
+      saveLoading: _.loading.effects.options.saveFileSet,
+    }),
+    [],
+  );
+
 export const SetDetail: React.SFC<{}> = props => {
   const { dispatch } = useStore();
+  const { saveLoading } = useMappedState(mapState());
   const [detail, _setDetail] = useState<FileSetDetail>(undefined);
   const setDetail = (obj: { [k: string]: any }) =>
     _setDetail(pre => ({ ...pre, ...obj }));
@@ -104,6 +122,14 @@ export const SetDetail: React.SFC<{}> = props => {
     }
   };
 
+  const handleRuleToggleStatusClick = (ruleId, value) => () => {
+    const index = ruleList.findIndex(_ => _.id === ruleId);
+    if (index > -1) {
+      ruleList[index].status = value ? STATUS.ENABLE : STATUS.DISABLE;
+      forceRender();
+    }
+  };
+
   const handleRuleContentChange = ruleId => e => {
     const index = ruleList.findIndex(_ => _.id === ruleId);
     if (index > -1) {
@@ -135,6 +161,14 @@ export const SetDetail: React.SFC<{}> = props => {
     }
   };
 
+  const handleFileToggleStatusClick = (fileId, value) => () => {
+    const index = sourceFileList.findIndex(_ => _.id === fileId);
+    if (index > -1) {
+      sourceFileList[index].status = value ? STATUS.ENABLE : STATUS.DISABLE;
+      forceRender();
+    }
+  };
+
   const handleFileContentChange = fileId => e => {
     const index = sourceFileList.findIndex(_ => _.id === fileId);
     if (index > -1) {
@@ -151,55 +185,103 @@ export const SetDetail: React.SFC<{}> = props => {
   };
 
   return detail ? (
-    <Spin spinning={false}>
+    <Spin spinning={saveLoading}>
       <Row gutter={16}>
-        <Col span={12}>
+        <Col md={12} sm={24}>
           <Form.Item label="Name">
             <Input value={name} onChange={handleNameChange} />
           </Form.Item>
         </Col>
-        <Col span={12}>
+        <Col md={12} sm={24}>
           <Form.Item label="Actions">
-            <Button.Group>
-              <Button onClick={handleAddNewRuleOfSet}>Add new rule</Button>
-              <Button onClick={handleAddNewFileOfSet}>Add new file</Button>
-              <Button type="primary" onClick={handleSave}>
-                Save
-              </Button>
-            </Button.Group>
+            <Affix
+              // TODO onChange
+              offsetTop={20}
+            >
+              <Button.Group>
+                <Button onClick={handleAddNewRuleOfSet}>Add new rule</Button>
+                <Button onClick={handleAddNewFileOfSet}>Add new file</Button>
+                <Button type="primary" onClick={handleSave}>
+                  Save
+                </Button>
+              </Button.Group>
+            </Affix>
           </Form.Item>
         </Col>
       </Row>
       <List
         dataSource={ruleList}
         rowKey="id"
-        grid={{ gutter: 8, column: 2 }}
+        grid={{ gutter: 8, md: 2, sm: 1 }}
         bordered
         header="Rule list"
+        size="small"
         renderItem={(rule: Rule) => {
-          // TODO status
-          const { id: ruleId, regexContent, matchType } = rule;
+          const {
+            id: ruleId,
+            regexContent,
+            matchType,
+            status: ruleStatus,
+          } = rule;
           return (
-            <List.Item style={{ display: 'flex', marginTop: 8 }}>
-              <Select
-                value={matchType}
-                onChange={handleRuleMatchTypeChange(ruleId)}
-                style={{ width: 140 }}
-              >
-                {renderOptions(MATCH_TYPE_OPTIONS())}
-              </Select>
-              <Input
-                value={regexContent}
-                onChange={handleRuleContentChange(ruleId)}
-                placeholder="Write your regex here"
-                style={{
-                  width: 0,
-                  flex: 1,
-                }}
-              />
-              <Button type="danger" onClick={handleClickDeleteRule(ruleId)}>
-                <Icon type="delete" />
-              </Button>
+            <List.Item style={{ marginTop: 8 }}>
+              <Row gutter={8}>
+                <Col md={14} sm={24}>
+                  <Input
+                    value={regexContent}
+                    onChange={handleRuleContentChange(ruleId)}
+                    placeholder="Write your regex here"
+                    size="small"
+                    disabled={ruleStatus === STATUS.DISABLE}
+                  />
+                </Col>
+                <Col md={10} sm={24}>
+                  <Select
+                    size="small"
+                    value={matchType}
+                    onChange={handleRuleMatchTypeChange(ruleId)}
+                    style={{ width: 140 }}
+                  >
+                    {renderOptions(MATCH_TYPE_OPTIONS())}
+                  </Select>
+                  <Dropdown
+                    overlay={
+                      <Menu>
+                        <Menu.Item key="1">
+                          <Button
+                            size="small"
+                            style={{ width: 75 }}
+                            type={
+                              ruleStatus === STATUS.ENABLE
+                                ? 'primary'
+                                : 'dashed'
+                            }
+                            onClick={handleRuleToggleStatusClick(
+                              ruleId,
+                              !(ruleStatus === STATUS.ENABLE),
+                            )}
+                          >
+                            {ruleStatus}
+                          </Button>
+                        </Menu.Item>
+                        <Menu.Item key="2">
+                          <Button
+                            type="danger"
+                            onClick={handleClickDeleteRule(ruleId)}
+                            size="small"
+                          >
+                            <Icon type="delete" />
+                          </Button>
+                        </Menu.Item>
+                      </Menu>
+                    }
+                  >
+                    <Button size="small">
+                      Actions <Icon type="down" />
+                    </Button>
+                  </Dropdown>
+                </Col>
+              </Row>
             </List.Item>
           );
         }}
@@ -207,20 +289,26 @@ export const SetDetail: React.SFC<{}> = props => {
       <List
         style={{ marginTop: 16 }}
         dataSource={sourceFileList}
-        grid={{ gutter: 8, column: 1 }}
+        grid={{ gutter: 8 }}
         rowKey="id"
         bordered
         header="Source file list"
+        split
         renderItem={item => {
-          // TODO status
-          const { id: fileId, sourceType, content, runAt } = item;
+          const {
+            id: fileId,
+            sourceType,
+            content,
+            runAt,
+            status: fileStatus,
+          } = item;
           const style100 = {
             width: '100%',
           };
           return (
             <List.Item>
               <Row gutter={16}>
-                <Col span={4}>
+                <Col md={4} sm={24}>
                   <Form.Item label="Source type">
                     <Select
                       value={sourceType}
@@ -231,7 +319,7 @@ export const SetDetail: React.SFC<{}> = props => {
                     </Select>
                   </Form.Item>
                 </Col>
-                <Col span={4}>
+                <Col md={4} sm={24}>
                   <Form.Item label="Run at">
                     <Select
                       value={runAt}
@@ -242,14 +330,28 @@ export const SetDetail: React.SFC<{}> = props => {
                     </Select>
                   </Form.Item>
                 </Col>
-                <Col span={16}>
+                <Col md={16} sm={24}>
                   <Form.Item label="Actions">
-                    <Button
-                      type="danger"
-                      onClick={handleClickDeleteFile(fileId)}
-                    >
-                      <Icon type="delete" />
-                    </Button>
+                    <Button.Group>
+                      <Button
+                        style={{ width: 85 }}
+                        type={
+                          fileStatus === STATUS.ENABLE ? 'primary' : 'dashed'
+                        }
+                        onClick={handleFileToggleStatusClick(
+                          fileId,
+                          !(fileStatus === STATUS.ENABLE),
+                        )}
+                      >
+                        {fileStatus}
+                      </Button>
+                      <Button
+                        type="danger"
+                        onClick={handleClickDeleteFile(fileId)}
+                      >
+                        <Icon type="delete" />
+                      </Button>
+                    </Button.Group>
                   </Form.Item>
                 </Col>
               </Row>
@@ -262,6 +364,7 @@ export const SetDetail: React.SFC<{}> = props => {
                       minRows: 5,
                       maxRows: 10,
                     }}
+                    disabled={fileStatus === STATUS.DISABLE}
                     onChange={handleFileContentChange(fileId)}
                   />
                 </Col>
