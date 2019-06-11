@@ -1,3 +1,4 @@
+import { handleMethodsImplement } from './background/handleMethodsImplement';
 import { handlePageOpenMsg } from './background/handlePageOpenMsg';
 import { Log } from './common/log';
 import { IMSG_TYPE, Message } from './common/Message';
@@ -16,6 +17,24 @@ chrome.runtime.onMessage.addListener((data: Message, sender, sendResponse) => {
           new Message(IMSG_TYPE.CONTENT_2_BACKGROUND_PAGE_OPEN_RESP, msg),
         );
       });
+      return true;
+    }
+    case IMSG_TYPE.CONTENT_2_BACKGROUND_CALL_METHOD: {
+      handleMethodsImplement(data, sender)
+        .then(msg => {
+          sendResponse(
+            new Message(IMSG_TYPE.CONTENT_2_BACKGROUND_CALL_METHOD_RESP, {
+              result: msg,
+            }),
+          );
+        })
+        .catch(err => {
+          sendResponse(
+            new Message(IMSG_TYPE.CONTENT_2_BACKGROUND_CALL_METHOD_RESP, {
+              error: err,
+            }),
+          );
+        });
       return true;
     }
   }

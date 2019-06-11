@@ -1,4 +1,5 @@
 import { hashHistory } from '@/components/options/RouterLayout';
+import { AnyFunc } from '@/interfaces/utils';
 import qs from 'querystring';
 
 export function removeIndex<T = any>(arr: T[], index: number): T[] {
@@ -27,4 +28,8 @@ export function updateHashQuery(obj: Record<string, string>) {
   hashHistory.replace(
     `${hashHistory.location.pathname}?${updateObj.toString()}`,
   );
+}
+
+export function invokeFunc<T = any>(fn: AnyFunc<T>, ...args: any[]): T {
+  return fn(...args);
 }
