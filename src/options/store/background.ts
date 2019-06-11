@@ -27,7 +27,7 @@ export const background = extendModel<{}>({
             for (const rule of ruleList) {
               const { regexContent, status, matchType } = rule;
               if (status === STATUS.ENABLE && regexContent) {
-                const regex = new RegExp(regexContent, 'ig');
+                const regex = new RegExp(regexContent, 'i');
                 switch (matchType) {
                   case MATCH_TYPE.ALL:
                     flag = regex.test(url.href);

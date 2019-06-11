@@ -1,3 +1,4 @@
+import { Log } from '@/common/log';
 import { MissingError } from '@/common/MisingError';
 import {
   FileSet,
@@ -56,11 +57,11 @@ export class InsertCodeDB extends Dexie implements IDatasource {
     status?: STATUS;
     name?: string;
   }): Promise<FileSetWithRule[]> {
-    query = { status: undefined, name: '', ...query };
+    query = { status: undefined, name: undefined, ...query };
 
-    const getRegex = str => (str ? new RegExp(str, 'ig') : false);
+    const getRegex = str => (str ? new RegExp(str, 'i') : false);
 
-    const keys = Object.keys(query);
+    const keys = ['status', 'name'];
     const regexMap: Record<string, false | RegExp> = {};
     keys.map(key => (regexMap[key] = getRegex(query[key])));
 
@@ -87,6 +88,8 @@ export class InsertCodeDB extends Dexie implements IDatasource {
           .toArray();
       }),
     );
+
+    Log.Debug('getFileSetList result with query', query, setList);
 
     return setList;
   }
