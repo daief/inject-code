@@ -37,6 +37,7 @@ import {
   RUN_AT_OPTIONS,
   SOURCE_TYPE_OPTIONS,
 } from '../store/options';
+import { TopActions } from './TopActions';
 
 const { useEffect, useState, useCallback } = React;
 
@@ -97,38 +98,6 @@ export const SetDetail: React.SFC = props => {
   }, [fileSetId]);
 
   // ------------------------------------------------------------ event handlers
-
-  const handleAddNewRuleOfSet = async () => {
-    const rule: Rule = {
-      id: `${NEW_THING_ID_PREFIX_MARK}${Date.now()}`,
-      filesSetId: id,
-      regexContent: '',
-      status: STATUS.ENABLE,
-      matchType: MATCH_TYPE.DOMAIN,
-    };
-    detail.ruleList.push(rule);
-    setDetail({
-      ruleList: [...detail.ruleList],
-    });
-  };
-
-  const handleAddNewFileOfSet = async () => {
-    const f: SourceFile = {
-      id: `${NEW_THING_ID_PREFIX_MARK}${Date.now()}`,
-      content: '',
-      status: STATUS.ENABLE,
-      sourceType: SOURCE_TYPE.JS,
-      runAt: RUN_AT.DOCUMENT_IDLE,
-    };
-    detail.sourceFileList.push(f);
-    setDetail({
-      sourceFileList: [...detail.sourceFileList],
-    });
-  };
-
-  const handleSave = async () => {
-    dispatch.options.saveFileSet(detail);
-  };
 
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setDetail({ name: e.target.value });
@@ -222,25 +191,12 @@ export const SetDetail: React.SFC = props => {
     <Spin spinning={saveLoading}>
       <Row gutter={16}>
         <Col md={12} sm={24}>
-          <Form.Item label="Name">
+          <Form.Item label="Name" validateStatus={name ? '' : 'error'}>
             <Input value={name} onChange={handleNameChange} />
           </Form.Item>
         </Col>
         <Col md={12} sm={24}>
-          <Form.Item label="Actions">
-            <Affix
-              // TODO onChange
-              offsetTop={20}
-            >
-              <Button.Group>
-                <Button onClick={handleAddNewRuleOfSet}>Add new rule</Button>
-                <Button onClick={handleAddNewFileOfSet}>Add new file</Button>
-                <Button type="primary" onClick={handleSave}>
-                  Save
-                </Button>
-              </Button.Group>
-            </Affix>
-          </Form.Item>
+          <TopActions />
         </Col>
       </Row>
       <List
@@ -311,7 +267,7 @@ export const SetDetail: React.SFC = props => {
                     }
                   >
                     <Button size="small">
-                      Actions <Icon type="down" />
+                      <Icon type="setting" />
                     </Button>
                   </Dropdown>
                 </Col>

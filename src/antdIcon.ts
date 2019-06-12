@@ -18,4 +18,6 @@ export {
   SearchOutline,
   CloseCircleFill,
   DownOutline,
+  SaveOutline,
+  SettingOutline,
 } from '@ant-design/icons';
