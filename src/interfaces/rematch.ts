@@ -1,5 +1,5 @@
 // fix & extend some rematch types error
-import { InsertCodeDB } from '@/datasource/indexeddb';
+import { InjectCodeDB } from '@/datasource/indexeddb';
 import {
   Action,
   ModelConfig as LibModelConfig,
@@ -12,7 +12,7 @@ export interface ModelEffects {
     payload: any,
     rootState: any,
     mate: {
-      $db: InsertCodeDB;
+      $db: InjectCodeDB;
     },
   ) => void;
 }

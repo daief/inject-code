@@ -12,14 +12,13 @@ import {
 } from '@/interfaces/entities';
 import { PartialKeys } from '@/interfaces/utils';
 import Dexie from 'dexie';
-import { IDatasource } from '../api';
 
-let instance: InsertCodeDB;
+let instance: InjectCodeDB;
 
-export class InsertCodeDB extends Dexie implements IDatasource {
-  public static getInstance(): InsertCodeDB {
+export class InjectCodeDB extends Dexie {
+  public static getInstance(): InjectCodeDB {
     if (!instance) {
-      instance = new InsertCodeDB();
+      instance = new InjectCodeDB();
     }
     return instance;
   }

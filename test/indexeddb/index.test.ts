@@ -1,8 +1,7 @@
 /**
  * try some simple unit testing for practice
  */
-import { getInstance } from '@/datasource/api';
-import { InsertCodeDB } from '@/datasource/indexeddb';
+import { InjectCodeDB } from '@/datasource/indexeddb';
 import {
   FileSet,
   MATCH_TYPE,
@@ -16,13 +15,12 @@ import {
 describe('indexeddb', () => {
   describe('only one instance', () => {
     it('check indexeddb instance', () => {
-      expect(getInstance()).toEqual(InsertCodeDB.getInstance());
-      expect(InsertCodeDB.getInstance()).toEqual(InsertCodeDB.getInstance());
+      expect(InjectCodeDB.getInstance()).toEqual(InjectCodeDB.getInstance());
     });
   });
 
   describe('api it', () => {
-    const db = InsertCodeDB.getInstance();
+    const db = InjectCodeDB.getInstance();
 
     beforeEach(async done => {
       await db.clearAll();

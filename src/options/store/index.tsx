@@ -1,4 +1,4 @@
-import { getInstance } from '@/datasource/api';
+import { InjectCodeDB } from '@/datasource/indexeddb';
 import { init, RematchStore } from '@rematch/core';
 import createLoadingPlugin from '@rematch/loading';
 import * as React from 'react';
@@ -24,7 +24,7 @@ export const store: RematchStore & {
   plugins: [
     createInjectCtxPlugin({
       injected: {
-        $db: getInstance(),
+        $db: InjectCodeDB.getInstance(),
       },
     }),
     createLoadingPlugin({}),
