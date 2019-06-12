@@ -1,4 +1,5 @@
 import { extendConfig } from '@axew/jugg';
+import { IgnorePlugin } from 'webpack';
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
 const WriteFilePlugin = require('write-file-webpack-plugin');
@@ -69,7 +70,13 @@ export default extendConfig({
       ])
       .end()
       .plugin('write-file')
-      .use(WriteFilePlugin);
+      .use(WriteFilePlugin)
+      .end()
+      // ref: https://github.com/jmblog/how-to-optimize-momentjs-with-webpack#/
+      // en, zh-cn
+      .plugin('ignore-moment-locale')
+      .use(IgnorePlugin, [/^\.\/locale$/, /moment$/])
+      .end();
 
     if (!IS_PROD) {
       config.resolve.alias.merge({
@@ -102,4 +109,5 @@ export default extendConfig({
       postcss: {},
     },
   },
+  chunks: false,
 });
