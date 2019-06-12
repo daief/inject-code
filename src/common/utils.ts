@@ -1,4 +1,4 @@
-import { hashHistory } from '@/components/options/RouterLayout';
+import { hashHistory } from '@/components/hashHistory';
 import { AnyFunc } from '@/interfaces/utils';
 import qs from 'querystring';
 

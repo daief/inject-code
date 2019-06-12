@@ -1,4 +1,4 @@
-import { hashHistory } from '@/components/options/RouterLayout';
+import { hashHistory } from '@/components/hashHistory';
 import {
   FileSetWithRule,
   ID,

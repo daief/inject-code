@@ -1,12 +1,10 @@
+import { hashHistory } from '@/components/hashHistory';
 import { Home } from '@/options/Home';
 import { SetDetail } from '@/options/SetDetail';
 import { Button, Icon, Layout, Menu } from 'antd';
-import { createHashHistory } from 'history';
 import * as React from 'react';
 import { Link, Route, Router, Switch, withRouter } from 'react-router-dom';
 import * as styles from './style.module.less';
-
-export const hashHistory = createHashHistory();
 
 const { Header, Content } = Layout;
 

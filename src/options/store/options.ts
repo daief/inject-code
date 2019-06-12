@@ -1,6 +1,6 @@
 import { Log } from '@/common/log';
 import { NEW_THING_ID_PREFIX_MARK_REGEX } from '@/common/utils';
-import { hashHistory } from '@/components/options/RouterLayout';
+import { hashHistory } from '@/components/hashHistory';
 import {
   FileSetDetail,
   MATCH_TYPE,
