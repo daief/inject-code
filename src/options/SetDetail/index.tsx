@@ -4,18 +4,10 @@ import {
   NEW_THING_ID_PREFIX_MARK,
   removeIndex,
 } from '@/common/utils';
-import {
-  FileSetDetail,
-  MATCH_TYPE,
-  Rule,
-  RUN_AT,
-  SOURCE_TYPE,
-  SourceFile,
-  STATUS,
-} from '@/interfaces/entities';
+import { ToggleStatus } from '@/components/options/ToggleStatus';
+import { FileSetDetail, Rule, STATUS } from '@/interfaces/entities';
 import { AnyFunc } from '@/interfaces/utils';
 import {
-  Affix,
   Button,
   Col,
   Dropdown,
@@ -113,10 +105,10 @@ export const SetDetail: React.SFC = props => {
     }
   };
 
-  const handleRuleToggleStatusClick = (ruleId, value) => () => {
+  const handleRuleToggleStatusClick = ruleId => value => {
     const index = ruleList.findIndex(_ => _.id === ruleId);
     if (index > -1) {
-      ruleList[index].status = value ? STATUS.ENABLE : STATUS.DISABLE;
+      ruleList[index].status = value;
       setDetail({
         ruleList: [...ruleList],
       });
@@ -238,21 +230,11 @@ export const SetDetail: React.SFC = props => {
                     overlay={
                       <Menu>
                         <Menu.Item key="1">
-                          <Button
+                          <ToggleStatus
+                            value={ruleStatus}
+                            onChange={handleRuleToggleStatusClick(ruleId)}
                             size="small"
-                            style={{ width: 75 }}
-                            type={
-                              ruleStatus === STATUS.ENABLE
-                                ? 'primary'
-                                : 'dashed'
-                            }
-                            onClick={handleRuleToggleStatusClick(
-                              ruleId,
-                              !(ruleStatus === STATUS.ENABLE),
-                            )}
-                          >
-                            {ruleStatus}
-                          </Button>
+                          />
                         </Menu.Item>
                         <Menu.Item key="2">
                           <Button

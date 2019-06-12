@@ -20,4 +20,10 @@ export {
   DownOutline,
   SaveOutline,
   SettingOutline,
+  // SmileOutline,
+  // FrownOutline,
+  CheckOutline,
+  FileOutline,
+  CodeOutline,
+  LinkOutline,
 } from '@ant-design/icons';

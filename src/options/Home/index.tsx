@@ -1,4 +1,5 @@
 import { hashHistory } from '@/components/hashHistory';
+import { ToggleStatus } from '@/components/options/ToggleStatus';
 import {
   FileSetWithRule,
   ID,
@@ -47,7 +48,7 @@ export const Home: React.SFC = React.memo(() => {
   const handleSwitchStatusChange = (item: FileSetWithRule) => value => {
     dispatch.all.updateFileSet({
       id: item.id,
-      status: value ? STATUS.ENABLE : STATUS.DISABLE,
+      status: value,
     });
   };
 
@@ -79,9 +80,9 @@ export const Home: React.SFC = React.memo(() => {
               <Card
                 hoverable
                 actions={[
-                  <Switch
+                  <ToggleStatus
                     key="1"
-                    checked={status === STATUS.ENABLE}
+                    value={status}
                     onChange={handleSwitchStatusChange(item)}
                   />,
                   <Icon key="2" type="edit" onClick={pushToDetail(id)} />,
