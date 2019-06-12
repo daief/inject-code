@@ -1,5 +1,4 @@
 import { renderOptions } from '@/common/comptsHelper';
-import { useForceUpdate } from '@/common/hooks';
 import {
   getHashQuery,
   NEW_THING_ID_PREFIX_MARK,
@@ -45,20 +44,30 @@ const mapState = () =>
   useCallback<
     AnyFunc<{
       saveLoading: boolean;
+      detail: FileSetDetail | undefined;
+      detailCopy: FileSetDetail | undefined;
     }>
   >(
     _ => ({
       saveLoading: _.loading.effects.options.saveFileSet,
+      detail: _.options.detail,
+      detailCopy: _.options.detailCopy,
     }),
     [],
   );
 
-export const SetDetail: React.SFC<{}> = props => {
+export const SetDetail: React.SFC = props => {
   const { dispatch } = useStore();
-  const { saveLoading } = useMappedState(mapState());
-  const [detail, _setDetail] = useState<FileSetDetail>(undefined);
-  const setDetail = (obj: { [k: string]: any }) =>
-    _setDetail(pre => ({ ...pre, ...obj }));
+  const { saveLoading, detail, detailCopy } = useMappedState(mapState());
+  const setDetail = (_: Partial<FileSetDetail> = {}) =>
+    dispatch.options.setState({
+      detail: {
+        ...detail,
+        ..._,
+      },
+    });
+  const fileSetId = +getHashQuery('id');
+
   const { name, ruleList, sourceFileList, id, status } =
     detail ||
     // tslint:disable-next-line: no-object-literal-type-assertion
@@ -69,16 +78,23 @@ export const SetDetail: React.SFC<{}> = props => {
       id: 0,
       status: STATUS.ENABLE,
     } as FileSetDetail);
-  const forceRender = useForceUpdate();
 
   useEffect(() => {
-    // window.addEventListener('beforeunload', e => {
-    //   e.returnValue = true
-    // });
-    dispatch.options
-      .getFileSetDetail({ id: +getHashQuery('id') })
-      .then(d => setDetail(d));
-  }, []);
+    const windowBeforeunloadHandler = e => {
+      if (JSON.stringify(detail) !== JSON.stringify(detailCopy)) {
+        e.returnValue = true;
+      }
+    };
+    window.addEventListener('beforeunload', windowBeforeunloadHandler);
+
+    return () => {
+      window.removeEventListener('beforeunload', windowBeforeunloadHandler);
+    };
+  }, [detail, detailCopy]);
+
+  useEffect(() => {
+    dispatch.options.getFileSetDetail({ id: fileSetId });
+  }, [fileSetId]);
 
   // ------------------------------------------------------------ event handlers
 
@@ -91,7 +107,9 @@ export const SetDetail: React.SFC<{}> = props => {
       matchType: MATCH_TYPE.DOMAIN,
     };
     detail.ruleList.push(rule);
-    forceRender();
+    setDetail({
+      ruleList: [...detail.ruleList],
+    });
   };
 
   const handleAddNewFileOfSet = async () => {
@@ -103,11 +121,13 @@ export const SetDetail: React.SFC<{}> = props => {
       runAt: RUN_AT.DOCUMENT_IDLE,
     };
     detail.sourceFileList.push(f);
-    forceRender();
+    setDetail({
+      sourceFileList: [...detail.sourceFileList],
+    });
   };
 
   const handleSave = async () => {
-    dispatch.options.saveFileSet(detail).then(d => setDetail(d));
+    dispatch.options.saveFileSet(detail);
   };
 
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -118,7 +138,9 @@ export const SetDetail: React.SFC<{}> = props => {
     const index = ruleList.findIndex(_ => _.id === ruleId);
     if (index > -1) {
       ruleList[index].matchType = value;
-      forceRender();
+      setDetail({
+        ruleList: [...ruleList],
+      });
     }
   };
 
@@ -126,7 +148,9 @@ export const SetDetail: React.SFC<{}> = props => {
     const index = ruleList.findIndex(_ => _.id === ruleId);
     if (index > -1) {
       ruleList[index].status = value ? STATUS.ENABLE : STATUS.DISABLE;
-      forceRender();
+      setDetail({
+        ruleList: [...ruleList],
+      });
     }
   };
 
@@ -134,7 +158,9 @@ export const SetDetail: React.SFC<{}> = props => {
     const index = ruleList.findIndex(_ => _.id === ruleId);
     if (index > -1) {
       ruleList[index].regexContent = e.target.value;
-      forceRender();
+      setDetail({
+        ruleList: [...ruleList],
+      });
     }
   };
 
@@ -149,7 +175,9 @@ export const SetDetail: React.SFC<{}> = props => {
     const index = sourceFileList.findIndex(_ => _.id === fileId);
     if (index > -1) {
       sourceFileList[index].sourceType = value;
-      forceRender();
+      setDetail({
+        sourceFileList: [...sourceFileList],
+      });
     }
   };
 
@@ -157,7 +185,9 @@ export const SetDetail: React.SFC<{}> = props => {
     const index = sourceFileList.findIndex(_ => _.id === fileId);
     if (index > -1) {
       sourceFileList[index].runAt = value;
-      forceRender();
+      setDetail({
+        sourceFileList: [...sourceFileList],
+      });
     }
   };
 
@@ -165,7 +195,9 @@ export const SetDetail: React.SFC<{}> = props => {
     const index = sourceFileList.findIndex(_ => _.id === fileId);
     if (index > -1) {
       sourceFileList[index].status = value ? STATUS.ENABLE : STATUS.DISABLE;
-      forceRender();
+      setDetail({
+        sourceFileList: [...sourceFileList],
+      });
     }
   };
 
@@ -173,7 +205,9 @@ export const SetDetail: React.SFC<{}> = props => {
     const index = sourceFileList.findIndex(_ => _.id === fileId);
     if (index > -1) {
       sourceFileList[index].content = e.target.value;
-      forceRender();
+      setDetail({
+        sourceFileList: [...sourceFileList],
+      });
     }
   };
 

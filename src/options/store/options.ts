@@ -19,6 +19,8 @@ export const options = extendModel<{
     sourceFileCount: number;
     ruleCount: number;
   };
+  detail: FileSetDetail | undefined;
+  detailCopy: FileSetDetail | undefined;
 }>({
   name: 'options',
   state: {
@@ -27,6 +29,8 @@ export const options = extendModel<{
       sourceFileCount: 0,
       ruleCount: 0,
     },
+    detail: undefined,
+    detailCopy: undefined,
   },
   effects: dispatch => {
     return {
@@ -49,6 +53,7 @@ export const options = extendModel<{
       async getFileSetDetail({ id }, _, { $db }) {
         const set = await $db.TableFileSet.get(id);
         if (!set) {
+          this.setDetailAndCopy(undefined);
           return set;
         }
         const { sourceFileIds, ruleIds } = set;
@@ -60,14 +65,16 @@ export const options = extendModel<{
             .anyOf(ruleIds)
             .toArray(),
         ]);
-        return {
+        const result: FileSetDetail = {
           ...set,
           sourceFileList,
           ruleList,
         };
+        this.setDetailAndCopy(result);
+        return result;
       },
       async saveFileSet(payload: FileSetDetail, _, { $db }) {
-        return $db.transaction(
+        const detail = await $db.transaction(
           'rw',
           $db.TableFileSet,
           $db.TableRule,
@@ -147,6 +154,8 @@ export const options = extendModel<{
             return payload;
           },
         );
+        this.setDetailAndCopy(detail);
+        return detail;
       },
       async addNewRuleOfSet({ id }, _, { $db }) {
         const ruleId = await $db.addNewRule({
@@ -161,6 +170,19 @@ export const options = extendModel<{
       return {
         ...state,
         ...payload,
+      };
+    },
+    setDetailAndCopy(state, payload) {
+      let tmp;
+      try {
+        tmp = JSON.parse(JSON.stringify(payload));
+      } catch (_) {
+        tmp = undefined;
+      }
+      return {
+        ...state,
+        detail: payload,
+        detailCopy: payload === undefined ? payload : tmp,
       };
     },
   },
