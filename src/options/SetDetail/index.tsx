@@ -364,8 +364,10 @@ export const SetDetail: React.SFC<{}> = props => {
                       minRows: 5,
                       maxRows: 10,
                     }}
+                    spellCheck={false}
                     disabled={fileStatus === STATUS.DISABLE}
                     onChange={handleFileContentChange(fileId)}
+                    style={{ fontSize: 14, lineHeight: 1.35 }}
                   />
                 </Col>
               </Row>

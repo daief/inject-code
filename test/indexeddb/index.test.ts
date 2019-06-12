@@ -145,5 +145,45 @@ describe('indexeddb', () => {
       expect(result[0].sourceFileIds).toBeInstanceOf(Array);
       done();
     });
+
+    it('deleteFileSet', async done => {
+      const set1: FileSet = {
+        id: 1,
+        name: 'name1',
+        sourceFileIds: [1],
+        status: STATUS.DISABLE,
+        ruleIds: [1],
+      };
+      const s1: SourceFile = {
+        id: 1,
+        sourceType: SOURCE_TYPE.CSS,
+        content: '',
+        status: STATUS.ENABLE,
+        runAt: RUN_AT.DOCUMENT_END,
+      };
+      const r1: Rule = {
+        id: 1,
+        filesSetId: 1,
+        regexContent: '',
+        status: STATUS.ENABLE,
+        matchType: MATCH_TYPE.ALL,
+      };
+
+      await Promise.all([
+        db.TableFileSet.add(set1),
+        db.TableSourceFile.add(s1),
+        db.TableRule.add(r1),
+      ]);
+      expect(await db.TableFileSet.count()).toBe(1);
+      expect(await db.TableSourceFile.count()).toBe(1);
+      expect(await db.TableRule.count()).toBe(1);
+
+      await db.deleteFileSet(1);
+      expect(await db.TableFileSet.count()).toBe(0);
+      expect(await db.TableSourceFile.count()).toBe(0);
+      expect(await db.TableRule.count()).toBe(0);
+
+      done();
+    });
   });
 });

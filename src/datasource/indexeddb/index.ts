@@ -152,7 +152,24 @@ export class InjectCodeDB extends Dexie {
     if (!id) {
       throw new MissingError();
     }
-    return this.TableFileSet.delete(id);
+    return this.transaction(
+      'rw',
+      this.tableFileSet,
+      this.tableRule,
+      this.tableSourceFile,
+      async () => {
+        const set = await this.tableFileSet.get(id);
+        await this.tableRule
+          .where('id')
+          .anyOf(set.ruleIds)
+          .delete();
+        await this.tableSourceFile
+          .where('id')
+          .anyOf(set.sourceFileIds)
+          .delete();
+        await this.tableFileSet.delete(id);
+      },
+    );
   }
 
   public clearAll() {

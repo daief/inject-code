@@ -67,75 +67,86 @@ export const options = extendModel<{
         };
       },
       async saveFileSet(payload: FileSetDetail, _, { $db }) {
-        const { id, name, ruleList, sourceFileList, status } = payload;
+        return $db.transaction(
+          'rw',
+          $db.TableFileSet,
+          $db.TableRule,
+          $db.TableSourceFile,
+          async () => {
+            const { id, name, ruleList, sourceFileList, status } = payload;
 
-        // insert & update rule list
-        const updatePartial: Rule[] = [];
-        const insertPartial: Array<PartialId<Rule>> = [];
-        ruleList.forEach(r => {
-          const { id: rid, ...rest } = r;
-          if (NEW_THING_ID_PREFIX_MARK_REGEX.test(rid + '')) {
-            insertPartial.push(rest);
-          } else {
-            updatePartial.push(r);
-          }
-        });
-        const [, newRuleIds] = await Promise.all([
-          Promise.all(
-            updatePartial.map(async r => {
-              return $db.TableRule.update(+r.id, { ...r });
-            }),
-          ),
-          Promise.all(
-            insertPartial.map(async r => {
-              return $db.addNewRule(r);
-            }),
-          ),
-        ]);
+            // insert & update rule list
+            const updatePartial: Rule[] = [];
+            const insertPartial: Array<PartialId<Rule>> = [];
+            ruleList.forEach(r => {
+              const { id: rid, ...rest } = r;
+              if (NEW_THING_ID_PREFIX_MARK_REGEX.test(rid + '')) {
+                insertPartial.push(rest);
+              } else {
+                updatePartial.push(r);
+              }
+            });
+            const [, newRuleIds] = await Promise.all([
+              Promise.all(
+                updatePartial.map(async r => {
+                  return $db.TableRule.update(+r.id, { ...r });
+                }),
+              ),
+              Promise.all(
+                insertPartial.map(async r => {
+                  return $db.addNewRule(r);
+                }),
+              ),
+            ]);
 
-        // insert & update source file list
-        const updatePartialFileList: SourceFile[] = [];
-        const insertPartialFileList: Array<PartialId<SourceFile>> = [];
-        sourceFileList.forEach(f => {
-          const { id: rid, ...rest } = f;
-          if (NEW_THING_ID_PREFIX_MARK_REGEX.test(rid + '')) {
-            insertPartialFileList.push(rest);
-          } else {
-            updatePartialFileList.push(f);
-          }
-        });
-        const [, newFileIds] = await Promise.all([
-          Promise.all(
-            updatePartialFileList.map(async f => {
-              return $db.TableSourceFile.update(+f.id, { ...f });
-            }),
-          ),
-          Promise.all(
-            insertPartialFileList.map(async f => {
-              return $db.addNewSourceFile(f);
-            }),
-          ),
-        ]);
+            // insert & update source file list
+            const updatePartialFileList: SourceFile[] = [];
+            const insertPartialFileList: Array<PartialId<SourceFile>> = [];
+            sourceFileList.forEach(f => {
+              const { id: rid, ...rest } = f;
+              if (NEW_THING_ID_PREFIX_MARK_REGEX.test(rid + '')) {
+                insertPartialFileList.push(rest);
+              } else {
+                updatePartialFileList.push(f);
+              }
+            });
+            const [, newFileIds] = await Promise.all([
+              Promise.all(
+                updatePartialFileList.map(async f => {
+                  return $db.TableSourceFile.update(+f.id, { ...f });
+                }),
+              ),
+              Promise.all(
+                insertPartialFileList.map(async f => {
+                  return $db.addNewSourceFile(f);
+                }),
+              ),
+            ]);
 
-        payload.ruleList = [
-          ...updatePartial,
-          ...insertPartial.map((r, i) => ({ ...r, id: newRuleIds[i] })),
-        ];
-        payload.ruleIds = payload.ruleList.map(r => r.id);
-        payload.sourceFileList = [
-          ...updatePartialFileList,
-          ...insertPartialFileList.map((f, i) => ({ ...f, id: newFileIds[i] })),
-        ];
-        payload.sourceFileIds = payload.sourceFileList.map(f => f.id);
+            payload.ruleList = [
+              ...updatePartial,
+              ...insertPartial.map((r, i) => ({ ...r, id: newRuleIds[i] })),
+            ];
+            payload.ruleIds = payload.ruleList.map(r => r.id);
+            payload.sourceFileList = [
+              ...updatePartialFileList,
+              ...insertPartialFileList.map((f, i) => ({
+                ...f,
+                id: newFileIds[i],
+              })),
+            ];
+            payload.sourceFileIds = payload.sourceFileList.map(f => f.id);
 
-        await $db.updateFileSet({
-          id,
-          name,
-          status,
-          sourceFileIds: payload.sourceFileIds,
-          ruleIds: payload.ruleIds,
-        });
-        return payload;
+            await $db.updateFileSet({
+              id,
+              name,
+              status,
+              sourceFileIds: payload.sourceFileIds,
+              ruleIds: payload.ruleIds,
+            });
+            return payload;
+          },
+        );
       },
       async addNewRuleOfSet({ id }, _, { $db }) {
         const ruleId = await $db.addNewRule({
