@@ -35,7 +35,6 @@ export const popup = extendModel<{
             checkStatus: false,
           });
         });
-        // matchedList.sort((a, _) => (a.status === STATUS.ENABLE ? -1 : 1));
         this.setState({ matchedList, url });
       },
       async toggleSetStatus(item: FileSetWithRule, _, { $db }) {

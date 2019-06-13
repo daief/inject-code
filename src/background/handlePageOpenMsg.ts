@@ -1,11 +1,22 @@
 import { Message } from '@/common/Message';
-import { SOURCE_TYPE, SourceFile } from '@/interfaces/entities';
+import { getGlobalOptions } from '@/common/utils';
+import {
+  EXTENSION_GLOBAL_OPTIONS_KEY,
+  SOURCE_TYPE,
+  SourceFile,
+  STATUS,
+} from '@/interfaces/entities';
 import { store } from '@/options/store';
 
 export async function handlePageOpenMsg(
   _data: Message,
   sender: chrome.runtime.MessageSender,
 ) {
+  const globalOpts = getGlobalOptions();
+  if (globalOpts[EXTENSION_GLOBAL_OPTIONS_KEY.status] === STATUS.DISABLE) {
+    // skip inject
+    return `${DEFINE.displayName} has been disabled now.`;
+  }
   const { tab } = sender;
   const { id: tabId } = tab;
   const backgroundDispatch = store.dispatch.background;
