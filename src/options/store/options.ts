@@ -1,4 +1,3 @@
-import { Log } from '@/common/log';
 import { NEW_THING_ID_PREFIX_MARK_REGEX } from '@/common/utils';
 import { hashHistory } from '@/components/hashHistory';
 import {
@@ -8,10 +7,10 @@ import {
   RUN_AT,
   SOURCE_TYPE,
   SourceFile,
-  STATUS,
 } from '@/interfaces/entities';
 import { extendModel } from '@/interfaces/rematch';
 import { PartialId } from '@/interfaces/utils';
+import { AlertProps } from 'antd/lib/alert';
 
 export const options = extendModel<{
   countOverview: {
@@ -21,6 +20,10 @@ export const options = extendModel<{
   };
   detail: FileSetDetail | undefined;
   detailCopy: FileSetDetail | undefined;
+  globalAlertTip: {
+    show: boolean;
+    alertProps: AlertProps;
+  };
 }>({
   name: 'options',
   state: {
@@ -31,6 +34,12 @@ export const options = extendModel<{
     },
     detail: undefined,
     detailCopy: undefined,
+    globalAlertTip: {
+      show: false,
+      alertProps: {
+        message: '',
+      },
+    },
   },
   effects: dispatch => {
     return {
@@ -183,6 +192,29 @@ export const options = extendModel<{
         ...state,
         detail: payload,
         detailCopy: payload === undefined ? payload : tmp,
+      };
+    },
+    openGlobalAlertTip(state, payload) {
+      return {
+        ...state,
+        globalAlertTip: {
+          show: true,
+          alertProps: {
+            message: '',
+            ...payload,
+          },
+        },
+      };
+    },
+    resetGlobalAlertTip(state, payload) {
+      return {
+        ...state,
+        globalAlertTip: {
+          show: false,
+          alertProps: {
+            message: '',
+          },
+        },
       };
     },
   },

@@ -1,4 +1,4 @@
-import { RouterLayout } from '@/components/options/RouterLayout';
+import { RouterLayout } from '@/options/components/RouterLayout';
 import * as React from 'react';
 import { hot } from 'react-hot-loader/root';
 import { RematchWrap } from './store';

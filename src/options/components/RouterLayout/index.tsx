@@ -1,12 +1,19 @@
+import { getGlobalOptions } from '@/common/utils';
 import { hashHistory } from '@/components/hashHistory';
+import { EXTENSION_GLOBAL_OPTIONS_KEY, STATUS } from '@/interfaces/entities';
+import { AnyFunc } from '@/interfaces/utils';
 import { Home } from '@/options/Home';
 import { SetDetail } from '@/options/SetDetail';
-import { Button, Icon, Layout, Menu } from 'antd';
+import { useStore } from '@/options/store';
+import { Alert, Icon, Layout, Menu } from 'antd';
+import { AlertProps } from 'antd/lib/alert';
 import * as React from 'react';
 import { Link, Route, Router, Switch, withRouter } from 'react-router-dom';
+import { useMappedState } from 'redux-react-hook';
 import * as styles from './style.module.less';
 
 const { Header, Content } = Layout;
+const { useEffect, useState, useCallback } = React;
 
 interface RouteConfg {
   name?: string;
@@ -44,8 +51,40 @@ const menus: MenuConfig[] = [
 
 const CustomHeader = withRouter(({ history: h }) => {
   const { pathname } = h.location;
-  const [selectedKeys, setSelectedKeys] = React.useState<string[]>([]);
-  React.useEffect(() => {
+  const [selectedKeys, setSelectedKeys] = useState<string[]>([]);
+  const { dispatch } = useStore();
+  const { globalAlertTip } = useMappedState(
+    useCallback<
+      AnyFunc<{
+        globalAlertTip: {
+          show: boolean;
+          alertProps: AlertProps;
+        };
+      }>
+    >(
+      _ => ({
+        globalAlertTip: _.options.globalAlertTip,
+      }),
+      [],
+    ),
+  );
+  const opts = getGlobalOptions();
+  const extensionStatus = opts[EXTENSION_GLOBAL_OPTIONS_KEY.status];
+
+  useEffect(() => {
+    if (extensionStatus === STATUS.DISABLE) {
+      dispatch.options.openGlobalAlertTip({
+        message: `${
+          DEFINE.displayName
+        } has been disabled now. Turn it on when you want to use it`,
+        type: 'warning',
+      });
+    } else {
+      dispatch.options.resetGlobalAlertTip();
+    }
+  }, [extensionStatus]);
+
+  useEffect(() => {
     const targetItem = menus.find(
       _ => _.path === pathname || (_.activePaths || []).includes(pathname),
     );
@@ -89,6 +128,10 @@ const CustomHeader = withRouter(({ history: h }) => {
           return <Menu.Item key={path}>{renderItem}</Menu.Item>;
         })}
       </Menu>
+
+      {globalAlertTip.show && (
+        <Alert {...globalAlertTip.alertProps} style={{ marginTop: 10 }} />
+      )}
     </Header>
   );
 });
