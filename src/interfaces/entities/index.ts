@@ -55,3 +55,15 @@ export type FileSetDetail = FileSet & {
   ruleList: Rule[];
   sourceFileList: SourceFile[];
 };
+
+export enum EXTENSION_GLOBAL_OPTIONS_KEY {
+  version = 'version',
+  status = 'status',
+  popupTipForRefresh = 'popupTipForRefresh',
+}
+
+export interface ExtensionGlobalOptions {
+  [EXTENSION_GLOBAL_OPTIONS_KEY.status]?: STATUS;
+  [EXTENSION_GLOBAL_OPTIONS_KEY.popupTipForRefresh]?: boolean;
+  [EXTENSION_GLOBAL_OPTIONS_KEY.version]?: string;
+}

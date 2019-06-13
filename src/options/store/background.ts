@@ -22,6 +22,7 @@ export const background = extendModel<{}>({
 
         const sourceFileIds: ID[] = fileSetList
           .filter(({ ruleList }) => {
+            // TODO
             let flag = false;
             // as long as one rule is matched, inject all code of the set
             for (const rule of ruleList) {

@@ -1,4 +1,11 @@
 import { hashHistory } from '@/components/hashHistory';
+import {
+  EXTENSION_GLOBAL_OPTIONS_KEY,
+  ExtensionGlobalOptions,
+  MATCH_TYPE,
+  Rule,
+  STATUS,
+} from '@/interfaces/entities';
 import { AnyFunc } from '@/interfaces/utils';
 import qs from 'querystring';
 
@@ -32,4 +39,70 @@ export function updateHashQuery(obj: Record<string, string>) {
 
 export function invokeFunc<T = any>(fn: AnyFunc<T>, ...args: any[]): T {
   return fn(...args);
+}
+
+export function checkRuleListIsMatched(
+  url: URL,
+  ruleList: Rule[],
+  opts: {
+    checkStatus?: boolean;
+  } = {},
+): boolean {
+  const { checkStatus } = { checkStatus: true, ...opts };
+  let flag = false;
+  // as long as one rule is matched, make it matched
+  for (const rule of ruleList) {
+    const { regexContent, status, matchType } = rule;
+    const statusPass = checkStatus ? status === STATUS.ENABLE : true;
+    if (statusPass && regexContent) {
+      const regex = new RegExp(regexContent, 'i');
+      switch (matchType) {
+        case MATCH_TYPE.ALL:
+          flag = regex.test(url.href);
+          break;
+        case MATCH_TYPE.DOMAIN:
+          flag = regex.test(url.hostname);
+          break;
+      }
+      if (flag) {
+        break;
+      }
+    }
+  }
+  return flag;
+}
+
+const DEFAULT_OPTIONS: ExtensionGlobalOptions = {
+  [EXTENSION_GLOBAL_OPTIONS_KEY.status]: STATUS.ENABLE,
+  [EXTENSION_GLOBAL_OPTIONS_KEY.popupTipForRefresh]: true,
+  [EXTENSION_GLOBAL_OPTIONS_KEY.version]: DEFINE.version,
+};
+export const EXTENSION_GLOBAL_OPTIONS_STORAGE_KEY =
+  '__EXTENSION_GLOBAL_OPTIONS_STORAGE_KEY__';
+export function getGlobalOptions(
+  key: EXTENSION_GLOBAL_OPTIONS_KEY,
+): ExtensionGlobalOptions[typeof key];
+export function getGlobalOptions(): ExtensionGlobalOptions;
+export function getGlobalOptions(key?: EXTENSION_GLOBAL_OPTIONS_KEY) {
+  let obj = {};
+  try {
+    obj = JSON.parse(
+      localStorage.getItem(EXTENSION_GLOBAL_OPTIONS_STORAGE_KEY),
+    );
+  } catch (_) {
+    /* */
+  }
+  obj = { ...DEFAULT_OPTIONS, ...obj };
+  return key ? obj[key] : obj;
+}
+
+export function setGlobalOptions(opts: Partial<ExtensionGlobalOptions>) {
+  const obj = getGlobalOptions();
+  localStorage.setItem(
+    EXTENSION_GLOBAL_OPTIONS_STORAGE_KEY,
+    JSON.stringify({
+      ...obj,
+      ...opts,
+    }),
+  );
 }

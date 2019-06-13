@@ -140,7 +140,7 @@ export class InjectCodeDB extends Dexie {
     });
   }
 
-  public async updateFileSet(fileSet: FileSet) {
+  public async updateFileSet(fileSet: Partial<FileSet>) {
     const { id, ...rest } = fileSet;
     if (!id) {
       throw new MissingError();

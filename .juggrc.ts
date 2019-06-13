@@ -109,5 +109,13 @@ export default extendConfig({
       postcss: {},
     },
   },
+  define: {
+    DEFINE: {
+      name: pkg.name,
+      displayName: pkg.displayName,
+      version: pkg.version,
+      FAKE_POPUP_URL: IS_PROD ? '' : process.env.FAKE_POPUP_URL,
+    },
+  },
   chunks: false,
 });
