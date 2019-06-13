@@ -1,4 +1,6 @@
-import { useCallback, useReducer } from 'react';
+import { AnyFunc } from '@/interfaces/utils';
+import { useCallback, useEffect, useReducer, useState } from 'react';
+import { checkIsMobile } from './utils';
 
 type VoidFunction = () => void;
 
@@ -14,3 +16,40 @@ export const useForceUpdate = (): VoidFunction => {
   }, [dispatch]);
   return memoizedDispatch;
 };
+
+export const useDebounce = (fn: AnyFunc, ms: number = 0, args: any[] = []) => {
+  useEffect(() => {
+    const handle = setTimeout(fn.bind(null, args), ms);
+
+    return () => {
+      clearTimeout(handle);
+    };
+  }, args);
+};
+
+export function useMobile() {
+  const [isMobile, setIsMobile] = useState(checkIsMobile());
+  const [w, setW] = useState(document.body.clientWidth);
+
+  useDebounce(
+    () => {
+      setIsMobile(checkIsMobile());
+    },
+    700,
+    [w],
+  );
+
+  useEffect(() => {
+    const handleResize = () => {
+      setW(document.body.clientWidth);
+    };
+
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+
+  return isMobile;
+}

@@ -4,8 +4,9 @@ import { EXTENSION_GLOBAL_OPTIONS_KEY, STATUS } from '@/interfaces/entities';
 import { AnyFunc } from '@/interfaces/utils';
 import { Home } from '@/options/Home';
 import { SetDetail } from '@/options/SetDetail';
+import { Setting } from '@/options/Setting';
 import { useStore } from '@/options/store';
-import { Alert, Icon, Layout, Menu } from 'antd';
+import { Alert, BackTop, Icon, Layout, Menu } from 'antd';
 import { AlertProps } from 'antd/lib/alert';
 import * as React from 'react';
 import { Link, Route, Router, Switch, withRouter } from 'react-router-dom';
@@ -39,13 +40,21 @@ const routes: RouteConfg[] = [
     path: '/set-detail',
     component: SetDetail,
   },
+  {
+    path: '/setting',
+    component: Setting,
+  },
 ];
 
 const menus: MenuConfig[] = [
   {
-    name: 'home',
+    name: 'Home',
     path: '/',
     activePaths: ['/', '/set-detail'],
+  },
+  {
+    name: 'Setting',
+    path: '/setting',
   },
 ];
 
@@ -148,6 +157,7 @@ export const RouterLayout: React.SFC = () => {
             ))}
           </Switch>
         </Content>
+        <BackTop />
       </Layout>
     </Router>
   );

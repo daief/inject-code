@@ -106,3 +106,7 @@ export function setGlobalOptions(opts: Partial<ExtensionGlobalOptions>) {
     }),
   );
 }
+
+export function checkIsMobile() {
+  return document.body.clientWidth < 768;
+}
