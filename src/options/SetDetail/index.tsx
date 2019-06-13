@@ -1,10 +1,6 @@
 import { renderOptions } from '@/common/comptsHelper';
-import {
-  getHashQuery,
-  NEW_THING_ID_PREFIX_MARK,
-  removeIndex,
-} from '@/common/utils';
-import { ToggleStatus } from '@/components/options/ToggleStatus';
+import { getHashQuery, removeIndex } from '@/common/utils';
+import { ToggleStatusButton } from '@/components/ToggleStatus';
 import { FileSetDetail, Rule, STATUS } from '@/interfaces/entities';
 import { AnyFunc } from '@/interfaces/utils';
 import {
@@ -152,10 +148,10 @@ export const SetDetail: React.SFC = props => {
     }
   };
 
-  const handleFileToggleStatusClick = (fileId, value) => () => {
+  const handleFileToggleStatusClick = fileId => value => {
     const index = sourceFileList.findIndex(_ => _.id === fileId);
     if (index > -1) {
-      sourceFileList[index].status = value ? STATUS.ENABLE : STATUS.DISABLE;
+      sourceFileList[index].status = value;
       setDetail({
         sourceFileList: [...sourceFileList],
       });
@@ -217,41 +213,28 @@ export const SetDetail: React.SFC = props => {
                     disabled={ruleStatus === STATUS.DISABLE}
                   />
                 </Col>
-                <Col md={10} sm={24}>
+                <Col md={8} sm={18}>
                   <Select
                     size="small"
                     value={matchType}
                     onChange={handleRuleMatchTypeChange(ruleId)}
-                    style={{ width: 140 }}
+                    style={{ width: '100%' }}
                   >
                     {renderOptions(MATCH_TYPE_OPTIONS())}
                   </Select>
-                  <Dropdown
-                    overlay={
-                      <Menu>
-                        <Menu.Item key="1">
-                          <ToggleStatus
-                            value={ruleStatus}
-                            onChange={handleRuleToggleStatusClick(ruleId)}
-                            size="small"
-                          />
-                        </Menu.Item>
-                        <Menu.Item key="2">
-                          <Button
-                            type="danger"
-                            onClick={handleClickDeleteRule(ruleId)}
-                            size="small"
-                          >
-                            <Icon type="delete" />
-                          </Button>
-                        </Menu.Item>
-                      </Menu>
-                    }
-                  >
-                    <Button size="small">
-                      <Icon type="setting" />
-                    </Button>
-                  </Dropdown>
+                </Col>
+                <Col md={2} sm={6}>
+                  <ToggleStatusButton
+                    size="small"
+                    value={ruleStatus}
+                    onChange={handleRuleToggleStatusClick(ruleId)}
+                  />
+                  <Button
+                    type="danger"
+                    onClick={handleClickDeleteRule(ruleId)}
+                    size="small"
+                    icon="delete"
+                  />
                 </Col>
               </Row>
             </List.Item>
@@ -305,24 +288,15 @@ export const SetDetail: React.SFC = props => {
                 <Col md={16} sm={24}>
                   <Form.Item label="Actions">
                     <Button.Group>
-                      <Button
-                        style={{ width: 85 }}
-                        type={
-                          fileStatus === STATUS.ENABLE ? 'primary' : 'dashed'
-                        }
-                        onClick={handleFileToggleStatusClick(
-                          fileId,
-                          !(fileStatus === STATUS.ENABLE),
-                        )}
-                      >
-                        {fileStatus}
-                      </Button>
+                      <ToggleStatusButton
+                        value={fileStatus}
+                        onChange={handleFileToggleStatusClick(fileId)}
+                      />
                       <Button
                         type="danger"
                         onClick={handleClickDeleteFile(fileId)}
-                      >
-                        <Icon type="delete" />
-                      </Button>
+                        icon="delete"
+                      />
                     </Button.Group>
                   </Form.Item>
                 </Col>

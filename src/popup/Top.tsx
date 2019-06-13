@@ -1,5 +1,5 @@
 import { getGlobalOptions, setGlobalOptions } from '@/common/utils';
-import { ToggleStatus } from '@/components/options/ToggleStatus';
+import { ToggleStatus } from '@/components/ToggleStatus';
 import { EXTENSION_GLOBAL_OPTIONS_KEY, STATUS } from '@/interfaces/entities';
 import { Alert, PageHeader } from 'antd';
 import * as React from 'react';

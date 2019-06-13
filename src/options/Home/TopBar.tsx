@@ -1,7 +1,17 @@
 import { getHashQuery, updateHashQuery } from '@/common/utils';
 import { STATUS } from '@/interfaces/entities';
 import { AnyFunc } from '@/interfaces/utils';
-import { Button, Card, Col, Form, Input, Radio, Row, Statistic } from 'antd';
+import {
+  Button,
+  Card,
+  Col,
+  Form,
+  Input,
+  Modal,
+  Radio,
+  Row,
+  Statistic,
+} from 'antd';
 import { RadioChangeEvent } from 'antd/lib/radio';
 import * as React from 'react';
 import { useMappedState } from 'redux-react-hook';
@@ -36,11 +46,14 @@ export const TopBar: React.SFC = () => {
   });
   const setFilter = (p: Record<string, string>) => _(pre => ({ ...pre, ...p }));
 
-  useEffect(() => {
+  const getFileSetList = () =>
     dispatch.all.getFileSetList({
       status: filter[FILTER_STATUS_KEY],
       name: filter[FILTER_NAME_KEY],
     });
+
+  useEffect(() => {
+    getFileSetList();
     dispatch.options.getOverviewInfo();
   }, []);
 
@@ -69,6 +82,21 @@ export const TopBar: React.SFC = () => {
       });
       updateHashQuery({ [FILTER_NAME_KEY]: v });
     }, 500);
+  };
+
+  const handleClickDeleteAll = () => {
+    Modal.confirm({
+      title: 'Notice',
+      content:
+        'Are you sure to delete all data? The data can not be recovered.',
+      okType: 'danger',
+      okText: 'Delete',
+      cancelText: 'Cancel',
+      async onOk() {
+        await dispatch.options.deleteAll();
+        return getFileSetList();
+      },
+    });
   };
 
   return (
@@ -108,8 +136,11 @@ export const TopBar: React.SFC = () => {
               value={filter[FILTER_NAME_KEY]}
               onChange={handleFilterNameChnage}
               allowClear
-              style={{ width: 200 }}
+              style={{ width: 200, marginRight: 16 }}
             />
+            <Button type="danger" icon="delete" onClick={handleClickDeleteAll}>
+              Delete all
+            </Button>
           </Form.Item>
         </Col>
       </Row>

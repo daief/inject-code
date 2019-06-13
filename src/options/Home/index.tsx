@@ -1,23 +1,9 @@
 import { hashHistory } from '@/components/hashHistory';
-import { ToggleStatus } from '@/components/options/ToggleStatus';
-import {
-  FileSetWithRule,
-  ID,
-  SOURCE_TYPE,
-  STATUS,
-} from '@/interfaces/entities';
+import { PopconfirmDelete } from '@/components/PopconfirmDelete';
+import { ToggleStatus } from '@/components/ToggleStatus';
+import { FileSetWithRule, ID, STATUS } from '@/interfaces/entities';
 import { AnyFunc } from '@/interfaces/utils';
-import {
-  Badge,
-  Card,
-  Col,
-  Icon,
-  List,
-  Popconfirm,
-  Row,
-  Statistic,
-  Switch,
-} from 'antd';
+import { Badge, Card, Col, Icon, List, Row, Statistic } from 'antd';
 import { BadgeProps } from 'antd/lib/badge';
 import * as React from 'react';
 import { useMappedState } from 'redux-react-hook';
@@ -86,16 +72,9 @@ export const Home: React.SFC = React.memo(() => {
                     onChange={handleSwitchStatusChange(item)}
                   />,
                   <Icon key="2" type="edit" onClick={pushToDetail(id)} />,
-                  <Popconfirm
-                    key="3"
-                    title={'Are you sure to delete?'}
-                    okText={'Delete'}
-                    okType="danger"
-                    cancelText={'No'}
-                    onConfirm={hanldeDeleteItem(item)}
-                  >
+                  <PopconfirmDelete key="3" onDelete={hanldeDeleteItem(item)}>
                     <Icon type="delete" style={{ color: '#f5222d' }} />
-                  </Popconfirm>,
+                  </PopconfirmDelete>,
                 ]}
               >
                 <Card.Meta

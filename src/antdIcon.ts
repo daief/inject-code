@@ -26,4 +26,6 @@ export {
   FileOutline,
   CodeOutline,
   LinkOutline,
+  QuestionCircleFill,
+  QuestionCircleOutline,
 } from '@ant-design/icons';

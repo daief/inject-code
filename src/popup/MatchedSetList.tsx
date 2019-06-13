@@ -1,4 +1,4 @@
-import { ToggleStatusButton } from '@/components/options/ToggleStatus';
+import { ToggleStatusButton } from '@/components/ToggleStatus';
 import { FileSetWithRule } from '@/interfaces/entities';
 import { AnyFunc } from '@/interfaces/utils';
 import { useStore } from '@/options/store';

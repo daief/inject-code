@@ -172,6 +172,21 @@ export const options = extendModel<{
         });
         return $db.TableRule.get(ruleId);
       },
+      async deleteAll(_, __, { $db }) {
+        return $db.transaction(
+          'rw',
+          $db.TableFileSet,
+          $db.TableRule,
+          $db.TableSourceFile,
+          async () => {
+            return Promise.all([
+              $db.TableFileSet.clear(),
+              $db.TableRule.clear(),
+              $db.TableSourceFile.clear(),
+            ]);
+          },
+        );
+      },
     };
   },
   reducers: {

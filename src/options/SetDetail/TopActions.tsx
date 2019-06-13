@@ -1,6 +1,7 @@
 import { NEW_THING_ID_PREFIX_MARK } from '@/common/utils';
 import { hashHistory } from '@/components/hashHistory';
-import { ToggleStatus } from '@/components/options/ToggleStatus';
+import { PopconfirmDelete } from '@/components/PopconfirmDelete';
+import { ToggleStatus } from '@/components/ToggleStatus';
 import {
   FileSetDetail,
   MATCH_TYPE,
@@ -120,12 +121,6 @@ export const TopActions: React.SFC<{}> = props => {
       disabled: !name,
       type: 'primary',
     },
-    {
-      icon: 'delete',
-      children: affixed ? '' : 'Delete',
-      onClick: handleDeleteSet,
-      type: 'danger',
-    },
   ];
 
   return (
@@ -142,6 +137,14 @@ export const TopActions: React.SFC<{}> = props => {
             <Button key={i} {...c} />
           ))}
         </Button.Group>
+
+        {!affixed && (
+          <PopconfirmDelete onDelete={handleDeleteSet}>
+            <Button icon={'delete'} type={'danger'}>
+              Delete
+            </Button>
+          </PopconfirmDelete>
+        )}
 
         {props.children}
       </Form.Item>
