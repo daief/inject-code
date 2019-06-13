@@ -87,7 +87,11 @@ export const TopBar: React.SFC = () => {
       <Row>
         <Col span={24} style={{ textAlign: 'left' }}>
           <Form.Item label="Actions" style={{ marginBottom: 0 }}>
-            <Button onClick={handleClickAddNew} style={{ marginRight: 16 }}>
+            <Button
+              onClick={handleClickAddNew}
+              style={{ marginRight: 16 }}
+              icon="plus"
+            >
               Add new set
             </Button>
             <RadioGroup

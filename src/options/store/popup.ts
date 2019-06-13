@@ -1,13 +1,15 @@
 import { checkRuleListIsMatched } from '@/common/utils';
-import { FileSetWithRule, STATUS } from '@/interfaces/entities';
+import { FileSetWithRule } from '@/interfaces/entities';
 import { extendModel } from '@/interfaces/rematch';
 
 export const popup = extendModel<{
   matchedList: FileSetWithRule[];
+  url: URL | null;
 }>({
   name: 'popup',
   state: {
     matchedList: [],
+    url: null,
   },
   effects: dispatch => {
     return {
@@ -34,11 +36,40 @@ export const popup = extendModel<{
           });
         });
         // matchedList.sort((a, _) => (a.status === STATUS.ENABLE ? -1 : 1));
-        this.setState({ matchedList });
+        this.setState({ matchedList, url });
       },
       async toggleSetStatus(item: FileSetWithRule, _, { $db }) {
         const { id, status } = item;
         return $db.updateFileSet({ id, status });
+      },
+      async addNewSetAndRule(_, rootState, { $db }) {
+        const { url } = rootState.popup;
+        if (!url) {
+          return '';
+        }
+        return $db
+          .transaction('rw', $db.TableFileSet, $db.TableRule, async () => {
+            const id = await $db.addNewFileSet({
+              name: 'Unset Name',
+            });
+            const ruleId = await $db.addNewRule({
+              filesSetId: id,
+              regexContent: url.hostname,
+            });
+            await $db.updateFileSet({
+              id,
+              ruleIds: [ruleId],
+            });
+            return id;
+          })
+          .then(setId => {
+            chrome.tabs.create(
+              { url: `options.html#/set-detail?id=${setId}` },
+              () => {
+                /* */
+              },
+            );
+          });
       },
     };
   },

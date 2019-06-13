@@ -1,8 +1,8 @@
 import { ToggleStatusButton } from '@/components/options/ToggleStatus';
-import { FileSetWithRule, STATUS } from '@/interfaces/entities';
+import { FileSetWithRule } from '@/interfaces/entities';
 import { AnyFunc } from '@/interfaces/utils';
 import { useStore } from '@/options/store';
-import { Button, Card, Icon, List, Tag } from 'antd';
+import { Button, Card, Col, Icon, List, Row, Tag } from 'antd';
 import * as React from 'react';
 import { useMappedState } from 'redux-react-hook';
 import * as styles from './style.module.less';
@@ -12,22 +12,28 @@ const mapState = () =>
     AnyFunc<{
       matchedList: FileSetWithRule[];
       listLoading: boolean;
+      addLoading: boolean;
     }>
   >(
     _ => ({
       matchedList: _.popup.matchedList,
       listLoading: _.loading.effects.popup.getMatchedSetList,
+      addLoading: _.loading.effects.popup.addNewSetAndRule,
     }),
     [],
   );
 
 export const MatchedSetList: React.SFC<{}> = props => {
   const { dispatch } = useStore();
-  const { matchedList, listLoading } = useMappedState(mapState());
+  const { matchedList, listLoading, addLoading } = useMappedState(mapState());
 
   React.useEffect(() => {
     dispatch.popup.getMatchedSetList();
   }, []);
+
+  const handleClickAddNewSet = () => {
+    dispatch.popup.addNewSetAndRule();
+  };
 
   const handleToggleSetStatus = (item, index) => async value => {
     const count = await dispatch.popup.toggleSetStatus({
@@ -50,8 +56,24 @@ export const MatchedSetList: React.SFC<{}> = props => {
       <List
         loading={listLoading}
         grid={{ column: 1 }}
-        dataSource={matchedList}
+        dataSource={['add', ...matchedList]}
         renderItem={(item, index) => {
+          if (typeof item === 'string') {
+            return (
+              <Row>
+                <Col span={24}>
+                  <Button
+                    type="dashed"
+                    icon="plus"
+                    style={{ width: '100%', marginBottom: 16 }}
+                    loading={addLoading}
+                    onClick={handleClickAddNewSet}
+                  />
+                </Col>
+              </Row>
+            );
+          }
+
           const { status, name, ruleIds, sourceFileIds } = item;
           return (
             <List.Item>
