@@ -28,4 +28,5 @@ export {
   LinkOutline,
   QuestionCircleFill,
   QuestionCircleOutline,
+  RocketOutline,
 } from '@ant-design/icons';

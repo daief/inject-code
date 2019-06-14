@@ -89,7 +89,6 @@ export const Setting: React.SFC<{}> = props => {
     >
       <Panel
         title="Normal"
-        line={true}
         content={
           <>
             <Row gutter={16}>
@@ -136,6 +135,7 @@ export const Setting: React.SFC<{}> = props => {
       />
       <Panel
         title="Code Editor"
+        line={false}
         content={
           <>
             <Row gutter={16}>
@@ -154,7 +154,7 @@ export const Setting: React.SFC<{}> = props => {
                     {[
                       ['material', '#263238'],
                       ['base16-light', '#f5f5f5'],
-                      ['twilight', '141414'],
+                      ['twilight', '#141414'],
                     ].map(([t, color]) => (
                       <Select.Option key={t} value={t}>
                         <span

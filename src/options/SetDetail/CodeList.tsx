@@ -1,9 +1,11 @@
 import { renderOptions } from '@/common/comptsHelper';
-import { removeIndex } from '@/common/utils';
+import { NEW_THING_ID_PREFIX_MARK, removeIndex } from '@/common/utils';
 import { ToggleStatusButton } from '@/components/ToggleStatus';
 import {
   EXTENSION_GLOBAL_OPTIONS_KEY,
   FileSetDetail,
+  RUN_AT,
+  SOURCE_TYPE,
   SourceFile,
   STATUS,
 } from '@/interfaces/entities';
@@ -36,6 +38,20 @@ export const CodeList: React.SFC<{}> = props => {
   const {
     [EXTENSION_GLOBAL_OPTIONS_KEY.useCodeEditor]: useCodeEditor,
   } = globalOptions;
+
+  // ---------------------------------------------------------------------------------------------------- events
+
+  const handleAddNewFileOfSet = async () => {
+    const f: SourceFile = {
+      id: `${NEW_THING_ID_PREFIX_MARK}${Date.now()}`,
+      content: '',
+      status: STATUS.ENABLE,
+      sourceType: SOURCE_TYPE.JS,
+      runAt: RUN_AT.DOCUMENT_IDLE,
+    };
+    detail.sourceFileList.push(f);
+    setDetail();
+  };
 
   const handleSourceTypeChange = fileId => value => {
     const index = sourceFileList.findIndex(_ => _.id === fileId);
@@ -86,13 +102,37 @@ export const CodeList: React.SFC<{}> = props => {
   return (
     <List
       style={{ marginTop: 16 }}
-      dataSource={sourceFileList}
+      dataSource={
+        sourceFileList.length
+          ? sourceFileList
+          : [
+              'add',
+              // avoid ts type error
+              ...sourceFileList,
+            ]
+      }
       grid={{ gutter: 8 }}
       rowKey="id"
       bordered
-      header="Source file list"
+      header="Source code list"
       split
       renderItem={item => {
+        if (typeof item === 'string') {
+          return (
+            <List.Item>
+              <Button
+                icon="plus"
+                type="dashed"
+                style={{
+                  width: '100%',
+                  height: 128,
+                  margin: '10px 0',
+                }}
+                onClick={handleAddNewFileOfSet}
+              />
+            </List.Item>
+          );
+        }
         const {
           id: fileId,
           sourceType,

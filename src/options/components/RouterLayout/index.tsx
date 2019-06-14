@@ -16,7 +16,7 @@ import { Link, Route, Router, Switch, withRouter } from 'react-router-dom';
 import { useMappedState } from 'redux-react-hook';
 import * as styles from './style.module.less';
 
-const { Header, Content } = Layout;
+const { Header, Content, Footer } = Layout;
 const { useEffect, useState, useCallback } = React;
 
 interface RouteConfg {
@@ -163,6 +163,13 @@ export const RouterLayout: React.SFC = () => {
             ))}
           </Switch>
         </Content>
+        <Footer style={{ textAlign: 'center' }}>
+          {DEFINE.displayName} - {new Date().getFullYear()}{' '}
+          <Icon type="rocket" />{' '}
+          <a href="https://github.com/daief/inject-code" target="_blank">
+            daief
+          </a>
+        </Footer>
         <BackTop />
       </Layout>
     </Router>

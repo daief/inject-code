@@ -49,7 +49,7 @@ export const popup = extendModel<{
         return $db
           .transaction('rw', $db.TableFileSet, $db.TableRule, async () => {
             const id = await $db.addNewFileSet({
-              name: 'Unset Name',
+              name: 'Untitled',
             });
             const ruleId = await $db.addNewRule({
               filesSetId: id,

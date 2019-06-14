@@ -55,7 +55,7 @@ export const options = extendModel<{
       },
       async addNewSet(_, _1, { $db }) {
         const id = await $db.addNewFileSet({
-          name: 'Unset Name',
+          name: 'Untitled',
         });
         hashHistory.push(`/set-detail?id=${id}`);
       },
@@ -246,7 +246,7 @@ export const SOURCE_TYPE_OPTIONS = () => [
 ];
 
 export const RUN_AT_OPTIONS = () => [
-  [RUN_AT.DOCUMENT_IDLE, 'idle'],
-  [RUN_AT.DOCUMENT_START, 'document start'],
-  [RUN_AT.DOCUMENT_END, 'document end'],
+  [RUN_AT.DOCUMENT_IDLE, 'Idle'],
+  [RUN_AT.DOCUMENT_START, 'Document start'],
+  [RUN_AT.DOCUMENT_END, 'Document end'],
 ];

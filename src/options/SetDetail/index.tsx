@@ -1,14 +1,31 @@
 import { renderOptions } from '@/common/comptsHelper';
-import { getHashQuery, removeIndex } from '@/common/utils';
+import {
+  getHashQuery,
+  NEW_THING_ID_PREFIX_MARK,
+  removeIndex,
+} from '@/common/utils';
 import { ToggleStatusButton } from '@/components/ToggleStatus';
 import {
   ExtensionGlobalOptions,
   FileSetDetail,
+  MATCH_TYPE,
   Rule,
   STATUS,
 } from '@/interfaces/entities';
 import { AnyFunc } from '@/interfaces/utils';
-import { Button, Col, Empty, Form, Input, List, Row, Select, Spin } from 'antd';
+import {
+  Button,
+  Col,
+  Empty,
+  Form,
+  Icon,
+  Input,
+  List,
+  Row,
+  Select,
+  Spin,
+  Tooltip,
+} from 'antd';
 import * as React from 'react';
 import { useMappedState } from 'redux-react-hook';
 import { useStore } from '../store';
@@ -48,7 +65,7 @@ export const SetDetail: React.SFC = props => {
     });
   const fileSetId = +getHashQuery('id');
 
-  const { name, ruleList } =
+  const { name, ruleList, id } =
     detail ||
     // tslint:disable-next-line: no-object-literal-type-assertion
     ({
@@ -86,6 +103,18 @@ export const SetDetail: React.SFC = props => {
 
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setDetail({ name: e.target.value });
+  };
+
+  const handleAddNewRuleOfSet = async () => {
+    const rule: Rule = {
+      id: `${NEW_THING_ID_PREFIX_MARK}${Date.now()}`,
+      filesSetId: id,
+      regexContent: '',
+      status: STATUS.ENABLE,
+      matchType: MATCH_TYPE.DOMAIN,
+    };
+    detail.ruleList.push(rule);
+    setDetail();
   };
 
   const handleRuleMatchTypeChange = ruleId => value => {
@@ -138,13 +167,38 @@ export const SetDetail: React.SFC = props => {
         </Col>
       </Row>
       <List
-        dataSource={ruleList}
+        dataSource={ruleList.length ? ruleList : ['add', ...ruleList]}
         rowKey="id"
         grid={{ gutter: 8, md: 2, sm: 1 }}
         bordered
-        header="Rule list"
+        header={
+          <>
+            <Tooltip
+              placement="topLeft"
+              title="Matching rules follow JS RegExp. Matching type affects the matching range of a url."
+            >
+              <Icon type="question-circle" />
+            </Tooltip>{' '}
+            Rule list
+          </>
+        }
         size="small"
         renderItem={(rule: Rule) => {
+          if (typeof rule === 'string') {
+            return (
+              <List.Item style={{ marginTop: 8 }}>
+                <Button
+                  icon="plus"
+                  type="dashed"
+                  style={{
+                    width: '100%',
+                  }}
+                  size="small"
+                  onClick={handleAddNewRuleOfSet}
+                />
+              </List.Item>
+            );
+          }
           const {
             id: ruleId,
             regexContent,
