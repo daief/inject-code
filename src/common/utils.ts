@@ -77,6 +77,8 @@ const DEFAULT_OPTIONS: ExtensionGlobalOptions = {
   [EXTENSION_GLOBAL_OPTIONS_KEY.popupTipForRefresh]: true,
   [EXTENSION_GLOBAL_OPTIONS_KEY.version]: DEFINE.version,
   [EXTENSION_GLOBAL_OPTIONS_KEY.useCodeEditor]: false,
+  [EXTENSION_GLOBAL_OPTIONS_KEY.codemirrorTheme]: 'material',
+  [EXTENSION_GLOBAL_OPTIONS_KEY.codemirrorLineNumbers]: true,
 };
 export const EXTENSION_GLOBAL_OPTIONS_STORAGE_KEY =
   '__EXTENSION_GLOBAL_OPTIONS_STORAGE_KEY__';

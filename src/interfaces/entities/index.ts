@@ -62,6 +62,8 @@ export enum EXTENSION_GLOBAL_OPTIONS_KEY {
   popupTipForRefresh = 'popupTipForRefresh',
 
   useCodeEditor = 'useCodeEditor',
+  codemirrorTheme = 'codemirrorTheme',
+  codemirrorLineNumbers = 'codemirrorLineNumbers',
 }
 
 export interface ExtensionGlobalOptions {
@@ -69,4 +71,6 @@ export interface ExtensionGlobalOptions {
   [EXTENSION_GLOBAL_OPTIONS_KEY.popupTipForRefresh]?: boolean;
   [EXTENSION_GLOBAL_OPTIONS_KEY.version]?: string;
   [EXTENSION_GLOBAL_OPTIONS_KEY.useCodeEditor]?: boolean;
+  [EXTENSION_GLOBAL_OPTIONS_KEY.codemirrorTheme]?: string;
+  [EXTENSION_GLOBAL_OPTIONS_KEY.codemirrorLineNumbers]?: boolean;
 }

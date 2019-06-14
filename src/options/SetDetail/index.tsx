@@ -74,6 +74,12 @@ export const SetDetail: React.SFC = props => {
 
   useEffect(() => {
     dispatch.options.getFileSetDetail({ id: fileSetId });
+
+    return () => {
+      dispatch.options.setState({
+        detail: undefined,
+      });
+    };
   }, [fileSetId]);
 
   // ------------------------------------------------------------ event handlers

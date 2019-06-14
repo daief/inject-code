@@ -5,6 +5,14 @@ import { SwitchProps } from 'antd/lib/switch';
 import * as React from 'react';
 import * as styles from './style.module.less';
 
+export function status2boolean(status: STATUS): boolean {
+  return status === STATUS.ENABLE;
+}
+
+export function boolean2status(booleanVal: boolean): STATUS {
+  return booleanVal ? STATUS.ENABLE : STATUS.DISABLE;
+}
+
 export const ToggleStatus: React.SFC<
   {
     showChildren?: boolean;
