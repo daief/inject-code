@@ -3,33 +3,17 @@ import { getHashQuery, removeIndex } from '@/common/utils';
 import { ToggleStatusButton } from '@/components/ToggleStatus';
 import { FileSetDetail, Rule, STATUS } from '@/interfaces/entities';
 import { AnyFunc } from '@/interfaces/utils';
-import {
-  Button,
-  Col,
-  Dropdown,
-  Empty,
-  Form,
-  Icon,
-  Input,
-  List,
-  Menu,
-  Row,
-  Select,
-  Spin,
-} from 'antd';
+import { Button, Col, Empty, Form, Input, List, Row, Select, Spin } from 'antd';
 import * as React from 'react';
 import { useMappedState } from 'redux-react-hook';
 import { useStore } from '../store';
-import {
-  MATCH_TYPE_OPTIONS,
-  RUN_AT_OPTIONS,
-  SOURCE_TYPE_OPTIONS,
-} from '../store/options';
+import { MATCH_TYPE_OPTIONS } from '../store/options';
+import { CodeList } from './CodeList';
 import { TopActions } from './TopActions';
 
-const { useEffect, useState, useCallback } = React;
+const { useEffect, useCallback } = React;
 
-const mapState = () =>
+export const mapState = () =>
   useCallback<
     AnyFunc<{
       saveLoading: boolean;
@@ -57,7 +41,7 @@ export const SetDetail: React.SFC = props => {
     });
   const fileSetId = +getHashQuery('id');
 
-  const { name, ruleList, sourceFileList, id, status } =
+  const { name, ruleList } =
     detail ||
     // tslint:disable-next-line: no-object-literal-type-assertion
     ({
@@ -128,53 +112,6 @@ export const SetDetail: React.SFC = props => {
     }
   };
 
-  const handleSourceTypeChange = fileId => value => {
-    const index = sourceFileList.findIndex(_ => _.id === fileId);
-    if (index > -1) {
-      sourceFileList[index].sourceType = value;
-      setDetail({
-        sourceFileList: [...sourceFileList],
-      });
-    }
-  };
-
-  const handleRunAtTypeChange = fileId => value => {
-    const index = sourceFileList.findIndex(_ => _.id === fileId);
-    if (index > -1) {
-      sourceFileList[index].runAt = value;
-      setDetail({
-        sourceFileList: [...sourceFileList],
-      });
-    }
-  };
-
-  const handleFileToggleStatusClick = fileId => value => {
-    const index = sourceFileList.findIndex(_ => _.id === fileId);
-    if (index > -1) {
-      sourceFileList[index].status = value;
-      setDetail({
-        sourceFileList: [...sourceFileList],
-      });
-    }
-  };
-
-  const handleFileContentChange = fileId => e => {
-    const index = sourceFileList.findIndex(_ => _.id === fileId);
-    if (index > -1) {
-      sourceFileList[index].content = e.target.value;
-      setDetail({
-        sourceFileList: [...sourceFileList],
-      });
-    }
-  };
-
-  const handleClickDeleteFile = fileId => () => {
-    const index = sourceFileList.findIndex(_ => _.id === fileId);
-    if (index > -1) {
-      setDetail({ sourceFileList: removeIndex(sourceFileList, index) });
-    }
-  };
-
   return detail ? (
     <Spin spinning={saveLoading}>
       <Row gutter={16}>
@@ -241,86 +178,7 @@ export const SetDetail: React.SFC = props => {
           );
         }}
       />
-      <List
-        style={{ marginTop: 16 }}
-        dataSource={sourceFileList}
-        grid={{ gutter: 8 }}
-        rowKey="id"
-        bordered
-        header="Source file list"
-        split
-        renderItem={item => {
-          const {
-            id: fileId,
-            sourceType,
-            content,
-            runAt,
-            status: fileStatus,
-          } = item;
-          const style100 = {
-            width: '100%',
-          };
-          return (
-            <List.Item>
-              <Row gutter={16}>
-                <Col md={4} sm={24}>
-                  <Form.Item label="Source type">
-                    <Select
-                      value={sourceType}
-                      style={style100}
-                      onChange={handleSourceTypeChange(fileId)}
-                    >
-                      {renderOptions(SOURCE_TYPE_OPTIONS())}
-                    </Select>
-                  </Form.Item>
-                </Col>
-                <Col md={4} sm={24}>
-                  <Form.Item label="Run at">
-                    <Select
-                      value={runAt}
-                      style={style100}
-                      onChange={handleRunAtTypeChange(fileId)}
-                    >
-                      {renderOptions(RUN_AT_OPTIONS())}
-                    </Select>
-                  </Form.Item>
-                </Col>
-                <Col md={16} sm={24}>
-                  <Form.Item label="Actions">
-                    <Button.Group>
-                      <ToggleStatusButton
-                        value={fileStatus}
-                        onChange={handleFileToggleStatusClick(fileId)}
-                      />
-                      <Button
-                        type="danger"
-                        onClick={handleClickDeleteFile(fileId)}
-                        icon="delete"
-                      />
-                    </Button.Group>
-                  </Form.Item>
-                </Col>
-              </Row>
-              <Row>
-                <Col span={24}>
-                  <Input.TextArea
-                    value={content}
-                    placeholder="Write code here"
-                    autosize={{
-                      minRows: 5,
-                      maxRows: 10,
-                    }}
-                    spellCheck={false}
-                    disabled={fileStatus === STATUS.DISABLE}
-                    onChange={handleFileContentChange(fileId)}
-                    style={{ fontSize: 14, lineHeight: 1.35 }}
-                  />
-                </Col>
-              </Row>
-            </List.Item>
-          );
-        }}
-      />
+      <CodeList />
     </Spin>
   ) : (
     <Empty />
