@@ -1,17 +1,23 @@
 import { renderOptions } from '@/common/comptsHelper';
 import { removeIndex } from '@/common/utils';
 import { ToggleStatusButton } from '@/components/ToggleStatus';
-import { FileSetDetail, SourceFile, STATUS } from '@/interfaces/entities';
+import {
+  EXTENSION_GLOBAL_OPTIONS_KEY,
+  FileSetDetail,
+  SourceFile,
+  STATUS,
+} from '@/interfaces/entities';
 import { Button, Col, Form, Input, List, Row, Select } from 'antd';
 import * as React from 'react';
 import { useMappedState } from 'redux-react-hook';
 import { mapState } from '.';
+import { Codemirror2 } from '../components/Codemirror2';
 import { useStore } from '../store';
 import { RUN_AT_OPTIONS, SOURCE_TYPE_OPTIONS } from '../store/options';
 
 export const CodeList: React.SFC<{}> = props => {
   const { dispatch } = useStore();
-  const { detail } = useMappedState(mapState());
+  const { detail, globalOptions } = useMappedState(mapState());
   const setDetail = (_: Partial<FileSetDetail> = {}) =>
     dispatch.options.setState({
       detail: {
@@ -26,6 +32,10 @@ export const CodeList: React.SFC<{}> = props => {
     ({
       sourceFileList: [],
     } as FileSetDetail);
+
+  const {
+    [EXTENSION_GLOBAL_OPTIONS_KEY.useCodeEditor]: useCodeEditor,
+  } = globalOptions;
 
   const handleSourceTypeChange = fileId => value => {
     const index = sourceFileList.findIndex(_ => _.id === fileId);
@@ -57,10 +67,10 @@ export const CodeList: React.SFC<{}> = props => {
     }
   };
 
-  const handleFileContentChange = fileId => e => {
+  const handleFileContentChange = fileId => value => {
     const index = sourceFileList.findIndex(_ => _.id === fileId);
     if (index > -1) {
-      sourceFileList[index].content = e.target.value;
+      sourceFileList[index].content = value;
       setDetail({
         sourceFileList: [...sourceFileList],
       });
@@ -136,18 +146,28 @@ export const CodeList: React.SFC<{}> = props => {
             </Row>
             <Row>
               <Col span={24}>
-                <Input.TextArea
-                  value={content}
-                  placeholder="Write code here"
-                  autosize={{
-                    minRows: 5,
-                    maxRows: 10,
-                  }}
-                  spellCheck={false}
-                  disabled={fileStatus === STATUS.DISABLE}
-                  onChange={handleFileContentChange(fileId)}
-                  style={{ fontSize: 14, lineHeight: 1.35 }}
-                />
+                {useCodeEditor ? (
+                  <Codemirror2
+                    options={{
+                      sourceType,
+                    }}
+                    value={content}
+                    onChange={handleFileContentChange(fileId)}
+                  />
+                ) : (
+                  <Input.TextArea
+                    value={content}
+                    placeholder="Write code here"
+                    autosize={{
+                      minRows: 5,
+                      maxRows: 20,
+                    }}
+                    spellCheck={false}
+                    disabled={fileStatus === STATUS.DISABLE}
+                    onChange={handleFileContentChange(fileId)}
+                    style={{ fontSize: 14, lineHeight: 1.35 }}
+                  />
+                )}
               </Col>
             </Row>
           </List.Item>

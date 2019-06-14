@@ -60,10 +60,13 @@ export enum EXTENSION_GLOBAL_OPTIONS_KEY {
   version = 'version',
   status = 'status',
   popupTipForRefresh = 'popupTipForRefresh',
+
+  useCodeEditor = 'useCodeEditor',
 }
 
 export interface ExtensionGlobalOptions {
   [EXTENSION_GLOBAL_OPTIONS_KEY.status]?: STATUS;
   [EXTENSION_GLOBAL_OPTIONS_KEY.popupTipForRefresh]?: boolean;
   [EXTENSION_GLOBAL_OPTIONS_KEY.version]?: string;
+  [EXTENSION_GLOBAL_OPTIONS_KEY.useCodeEditor]?: boolean;
 }

@@ -1,7 +1,12 @@
 import { renderOptions } from '@/common/comptsHelper';
 import { getHashQuery, removeIndex } from '@/common/utils';
 import { ToggleStatusButton } from '@/components/ToggleStatus';
-import { FileSetDetail, Rule, STATUS } from '@/interfaces/entities';
+import {
+  ExtensionGlobalOptions,
+  FileSetDetail,
+  Rule,
+  STATUS,
+} from '@/interfaces/entities';
 import { AnyFunc } from '@/interfaces/utils';
 import { Button, Col, Empty, Form, Input, List, Row, Select, Spin } from 'antd';
 import * as React from 'react';
@@ -19,12 +24,14 @@ export const mapState = () =>
       saveLoading: boolean;
       detail: FileSetDetail | undefined;
       detailCopy: FileSetDetail | undefined;
+      globalOptions: ExtensionGlobalOptions;
     }>
   >(
     _ => ({
       saveLoading: _.loading.effects.options.saveFileSet,
       detail: _.options.detail,
       detailCopy: _.options.detailCopy,
+      globalOptions: _.all.globalOptions,
     }),
     [],
   );
