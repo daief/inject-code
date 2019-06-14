@@ -1,13 +1,15 @@
-import { Log } from '@/common/log';
-import { FileSet, FileSetWithRule } from '@/interfaces/entities';
+import { getGlobalOptions, setGlobalOptions } from '@/common/utils';
+import { ExtensionGlobalOptions, FileSetWithRule } from '@/interfaces/entities';
 import { extendModel } from '@/interfaces/rematch';
 
 export const all = extendModel<{
   fileSetList: FileSetWithRule[];
+  globalOptions: ExtensionGlobalOptions;
 }>({
   name: 'all',
   state: {
     fileSetList: [],
+    globalOptions: getGlobalOptions(),
   },
   effects: dispatch => {
     return {
@@ -33,6 +35,9 @@ export const all = extendModel<{
         await $db.deleteFileSet(payload.id);
         await this.getFileSetList();
       },
+      getGlobalOptions() {
+        this.updateGlobalOptions();
+      },
     };
   },
   reducers: {
@@ -40,6 +45,13 @@ export const all = extendModel<{
       return {
         ...state,
         ...payload,
+      };
+    },
+    updateGlobalOptions(state, payload) {
+      setGlobalOptions(payload);
+      return {
+        ...state,
+        globalOptions: getGlobalOptions(),
       };
     },
   },

@@ -1,6 +1,9 @@
-import { getGlobalOptions } from '@/common/utils';
 import { hashHistory } from '@/components/hashHistory';
-import { EXTENSION_GLOBAL_OPTIONS_KEY, STATUS } from '@/interfaces/entities';
+import {
+  EXTENSION_GLOBAL_OPTIONS_KEY,
+  ExtensionGlobalOptions,
+  STATUS,
+} from '@/interfaces/entities';
 import { AnyFunc } from '@/interfaces/utils';
 import { Home } from '@/options/Home';
 import { SetDetail } from '@/options/SetDetail';
@@ -58,27 +61,30 @@ const menus: MenuConfig[] = [
   },
 ];
 
+const mapState = () =>
+  useCallback<
+    AnyFunc<{
+      globalAlertTip: {
+        show: boolean;
+        alertProps: AlertProps;
+      };
+      globalOptions: ExtensionGlobalOptions;
+    }>
+  >(
+    _ => ({
+      globalAlertTip: _.options.globalAlertTip,
+      globalOptions: _.all.globalOptions,
+    }),
+    [],
+  );
+
 const CustomHeader = withRouter(({ history: h }) => {
   const { pathname } = h.location;
   const [selectedKeys, setSelectedKeys] = useState<string[]>([]);
   const { dispatch } = useStore();
-  const { globalAlertTip } = useMappedState(
-    useCallback<
-      AnyFunc<{
-        globalAlertTip: {
-          show: boolean;
-          alertProps: AlertProps;
-        };
-      }>
-    >(
-      _ => ({
-        globalAlertTip: _.options.globalAlertTip,
-      }),
-      [],
-    ),
-  );
-  const opts = getGlobalOptions();
-  const extensionStatus = opts[EXTENSION_GLOBAL_OPTIONS_KEY.status];
+  const { globalAlertTip, globalOptions } = useMappedState(mapState());
+
+  const extensionStatus = globalOptions[EXTENSION_GLOBAL_OPTIONS_KEY.status];
 
   useEffect(() => {
     if (extensionStatus === STATUS.DISABLE) {

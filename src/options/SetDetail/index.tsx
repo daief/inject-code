@@ -213,7 +213,7 @@ export const SetDetail: React.SFC = props => {
                     disabled={ruleStatus === STATUS.DISABLE}
                   />
                 </Col>
-                <Col md={8} sm={18}>
+                <Col md={6} sm={16} xs={16}>
                   <Select
                     size="small"
                     value={matchType}
@@ -223,7 +223,7 @@ export const SetDetail: React.SFC = props => {
                     {renderOptions(MATCH_TYPE_OPTIONS())}
                   </Select>
                 </Col>
-                <Col md={2} sm={6}>
+                <Col md={4} sm={8} xs={8}>
                   <ToggleStatusButton
                     size="small"
                     value={ruleStatus}

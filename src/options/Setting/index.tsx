@@ -1,9 +1,14 @@
 import { useMobile } from '@/common/hooks';
-import { getGlobalOptions, setGlobalOptions } from '@/common/utils';
 import { ToggleStatus } from '@/components/ToggleStatus';
-import { EXTENSION_GLOBAL_OPTIONS_KEY } from '@/interfaces/entities';
+import {
+  EXTENSION_GLOBAL_OPTIONS_KEY,
+  ExtensionGlobalOptions,
+} from '@/interfaces/entities';
+import { AnyFunc } from '@/interfaces/utils';
 import { Col, Divider, Form, Row } from 'antd';
 import * as React from 'react';
+import { useMappedState } from 'redux-react-hook';
+import { useStore } from '../store';
 import * as styles from './style.module.less';
 
 const Panel: React.SFC<{
@@ -26,13 +31,24 @@ const Panel: React.SFC<{
 
 export const Setting: React.SFC<{}> = props => {
   const isMobile = useMobile();
-  const [opts, _setOpts] = React.useState(getGlobalOptions());
-  const { status } = opts;
-  const setOpts = p => _setOpts(pre => ({ ...pre, ...p }));
+  const { globalOptions } = useMappedState(
+    React.useCallback<
+      AnyFunc<{
+        globalOptions: ExtensionGlobalOptions;
+      }>
+    >(
+      _ => ({
+        globalOptions: _.all.globalOptions,
+      }),
+      [],
+    ),
+  );
+  const { status } = globalOptions;
+  const { dispatch } = useStore();
 
   React.useEffect(() => {
-    setGlobalOptions(opts);
-  }, [opts]);
+    dispatch.all.getGlobalOptions();
+  }, []);
 
   return (
     <Form
@@ -49,7 +65,7 @@ export const Setting: React.SFC<{}> = props => {
                 <ToggleStatus
                   value={status}
                   onChange={_ =>
-                    setOpts({
+                    dispatch.all.updateGlobalOptions({
                       [EXTENSION_GLOBAL_OPTIONS_KEY.status]: _,
                     })
                   }
