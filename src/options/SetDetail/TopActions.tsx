@@ -106,7 +106,6 @@ export const TopActions: React.SFC<{}> = props => {
       icon: 'link',
       children: affixed ? '' : 'Add rule',
       onClick: handleAddNewRuleOfSet,
-      // TODO title
       title: 'Add rule',
     },
     {
