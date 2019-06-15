@@ -164,7 +164,7 @@ export const RouterLayout: React.SFC = () => {
           </Switch>
         </Content>
         <Footer style={{ textAlign: 'center' }}>
-          {DEFINE.displayName} - {new Date().getFullYear()}{' '}
+          {DEFINE.displayName}@{DEFINE.version} - {new Date().getFullYear()}{' '}
           <Icon type="rocket" />{' '}
           <a href="https://github.com/daief/inject-code" target="_blank">
             daief
