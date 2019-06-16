@@ -1,9 +1,6 @@
 import { renderOptions } from '@/common/comptsHelper';
-import {
-  getHashQuery,
-  NEW_THING_ID_PREFIX_MARK,
-  removeIndex,
-} from '@/common/utils';
+import { NEW_THING_ID_PREFIX_MARK, removeIndex } from '@/common/utils';
+import { getHashQuery } from '@/components/hashHistory';
 import { ToggleStatusButton } from '@/components/ToggleStatus';
 import {
   ExtensionGlobalOptions,

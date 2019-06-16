@@ -1,4 +1,4 @@
-import { getHashQuery, updateHashQuery } from '@/common/utils';
+import { getHashQuery, updateHashQuery } from '@/components/hashHistory';
 import { STATUS } from '@/interfaces/entities';
 import { AnyFunc } from '@/interfaces/utils';
 import {
