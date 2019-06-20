@@ -9,13 +9,14 @@ import {
   SourceFile,
   STATUS,
 } from '@/interfaces/entities';
-import { Button, Col, Form, Input, List, Row, Select } from 'antd';
+import { Button, Col, Form, List, Row, Select } from 'antd';
 import * as React from 'react';
 import { useMappedState } from 'redux-react-hook';
 import { mapState } from '.';
 import { Codemirror2 } from '../components/Codemirror2';
 import { useStore } from '../store';
 import { RUN_AT_OPTIONS, SOURCE_TYPE_OPTIONS } from '../store/options';
+import * as styles from './style.module.less';
 
 export const CodeList: React.SFC<{}> = props => {
   const { dispatch } = useStore();
@@ -195,19 +196,16 @@ export const CodeList: React.SFC<{}> = props => {
                     onChange={handleFileContentChange(fileId)}
                   />
                 ) : (
-                  <Input.TextArea
+                  <textarea
                     value={content}
-                    placeholder="Write code here"
-                    autosize={{
-                      minRows: 5,
-                      maxRows: 20,
-                    }}
-                    spellCheck={false}
-                    disabled={fileStatus === STATUS.DISABLE}
                     onChange={e =>
                       handleFileContentChange(fileId)(e.target.value)
                     }
-                    style={{ fontSize: 14, lineHeight: 1.35 }}
+                    className={styles['code-textarea']}
+                    rows={10}
+                    disabled={fileStatus === STATUS.DISABLE}
+                    spellCheck={false}
+                    placeholder="Write code here"
                   />
                 )}
               </Col>
