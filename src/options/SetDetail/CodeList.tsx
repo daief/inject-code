@@ -83,7 +83,7 @@ export const CodeList: React.SFC<{}> = props => {
     }
   };
 
-  const handleFileContentChange = fileId => value => {
+  const handleFileContentChange = fileId => (value: string) => {
     const index = sourceFileList.findIndex(_ => _.id === fileId);
     if (index > -1) {
       sourceFileList[index].content = value;
@@ -204,7 +204,9 @@ export const CodeList: React.SFC<{}> = props => {
                     }}
                     spellCheck={false}
                     disabled={fileStatus === STATUS.DISABLE}
-                    onChange={handleFileContentChange(fileId)}
+                    onChange={e =>
+                      handleFileContentChange(fileId)(e.target.value)
+                    }
                     style={{ fontSize: 14, lineHeight: 1.35 }}
                   />
                 )}
