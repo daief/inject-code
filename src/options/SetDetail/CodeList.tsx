@@ -191,6 +191,9 @@ export const CodeList: React.SFC<{}> = props => {
                   <Codemirror2
                     options={{
                       sourceType,
+                      readOnly:
+                        fileStatus === STATUS.DISABLE ? 'nocursor' : false,
+                      scrollbarStyle: 'null',
                     }}
                     value={content}
                     onChange={handleFileContentChange(fileId)}
