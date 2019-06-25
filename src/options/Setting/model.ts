@@ -1,5 +1,6 @@
 import { extendModel } from '@/interfaces/rematch';
 import { message } from 'antd';
+import Dexie from 'dexie';
 import moment from 'moment';
 
 export const model = extendModel({
@@ -39,7 +40,7 @@ export const model = extendModel({
           elA.href = URL.createObjectURL(blob);
           elA.click();
         } catch (error) {
-          message.error('Export error' + error);
+          message.error('Export error: ' + error);
         } finally {
           hide();
         }
@@ -67,17 +68,35 @@ export const model = extendModel({
           // can do some check
           //
 
+          const addAndUpdate = async (
+            items: any[],
+            table: Dexie.Table<any, any>,
+          ) => {
+            return Promise.all(
+              items.map(async value => {
+                if (!Object.prototype.hasOwnProperty.call(value, 'id')) {
+                  return;
+                }
+                const count = await table.where({ id: value.id }).count();
+                if (count) {
+                  return table.update(value.id, value);
+                }
+                return table.add(value);
+              }),
+            );
+          };
+
           await $db.transaction('rw', $db.tables, async () => {
             return Promise.all([
-              $db.TableFileSet.bulkAdd(importObject.TableFileSet),
-              $db.TableRule.bulkAdd(importObject.TableRule),
-              $db.TableSourceFile.bulkAdd(importObject.TableSourceFile),
+              addAndUpdate(importObject.TableFileSet, $db.TableFileSet),
+              addAndUpdate(importObject.TableRule, $db.TableRule),
+              addAndUpdate(importObject.TableSourceFile, $db.TableSourceFile),
             ]);
           });
 
           message.success('Import done!');
         } catch (error) {
-          message.error('Export error' + error);
+          message.error('Export error: ' + error);
         } finally {
           hide();
         }
