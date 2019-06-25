@@ -16,7 +16,9 @@ const models = {
   popup,
 };
 
-type IDispatch = { [k in keyof typeof models]: any } | ((payload: any) => any);
+type IDispatch =
+  | { [k in keyof typeof models]: any } & Record<string, any>
+  | ((payload: any) => any);
 
 export const store: RematchStore & {
   // rewrite dispatch type to any

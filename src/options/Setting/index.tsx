@@ -9,12 +9,16 @@ import {
   ExtensionGlobalOptions,
 } from '@/interfaces/entities';
 import { AnyFunc } from '@/interfaces/utils';
-import { Col, Divider, Form, Row, Select } from 'antd';
+import { Button, Col, Divider, Form, Row, Select, Upload } from 'antd';
 import { FormItemProps } from 'antd/lib/form';
 import * as React from 'react';
 import { useMappedState } from 'redux-react-hook';
-import { useStore } from '../store';
+import { store, useStore } from '../store';
+import { model } from './model';
 import * as styles from './style.module.less';
+
+// @ts-ignore
+store.model(model);
 
 const Panel: React.SFC<{
   title?: React.ReactNode;
@@ -45,14 +49,18 @@ const Panel: React.SFC<{
 
 export const Setting: React.SFC<{}> = props => {
   const isMobile = useMobile();
-  const { globalOptions } = useMappedState(
+  const { globalOptions, exportLoading, importLoading } = useMappedState(
     React.useCallback<
       AnyFunc<{
         globalOptions: ExtensionGlobalOptions;
+        exportLoading: boolean;
+        importLoading: boolean;
       }>
     >(
       _ => ({
         globalOptions: _.all.globalOptions,
+        exportLoading: _.loading.effects.setting.exportData,
+        importLoading: _.loading.effects.setting.importData,
       }),
       [],
     ),
@@ -135,7 +143,7 @@ export const Setting: React.SFC<{}> = props => {
       />
       <Panel
         title="Code Editor"
-        line={false}
+        line
         content={
           <>
             <Row gutter={16}>
@@ -183,6 +191,37 @@ export const Setting: React.SFC<{}> = props => {
                     }
                   />
                 </Form.Item>
+              </Col>
+            </Row>
+          </>
+        }
+      />
+      <Panel
+        title="Data"
+        line={false}
+        content={
+          <>
+            <Row gutter={16}>
+              <Col {...colLayout1_2}>
+                <Button
+                  style={{ marginRight: 10 }}
+                  loading={exportLoading}
+                  onClick={() => {
+                    dispatch.setting.exportData();
+                  }}
+                >
+                  Export
+                </Button>
+                <Upload
+                  accept="application/json"
+                  beforeUpload={() => false}
+                  showUploadList={false}
+                  onChange={e => {
+                    dispatch.setting.importData({ file: e.file });
+                  }}
+                >
+                  <Button loading={importLoading}>Import</Button>
+                </Upload>
               </Col>
             </Row>
           </>

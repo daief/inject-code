@@ -12,6 +12,7 @@ import {
 } from '@/interfaces/entities';
 import { PartialKeys } from '@/interfaces/utils';
 import Dexie from 'dexie';
+// import 'dexie-export-import';  // this is not work
 
 let instance: InjectCodeDB;
 
