@@ -9,11 +9,12 @@ import {
   ExtensionGlobalOptions,
 } from '@/interfaces/entities';
 import { AnyFunc } from '@/interfaces/utils';
-import { Button, Col, Divider, Form, Row, Select, Upload } from 'antd';
+import { Button, Col, Divider, Form, Radio, Row, Select, Upload } from 'antd';
 import { FormItemProps } from 'antd/lib/form';
 import * as React from 'react';
 import { useMappedState } from 'redux-react-hook';
 import { store, useStore } from '../store';
+import { DATA_IMPORT_EXIST_BEHAVIOR_OPTIONS } from '../store/options';
 import { model } from './model';
 import * as styles from './style.module.less';
 
@@ -70,6 +71,7 @@ export const Setting: React.SFC<{}> = props => {
     [EXTENSION_GLOBAL_OPTIONS_KEY.useCodeEditor]: useCodeEditor,
     [EXTENSION_GLOBAL_OPTIONS_KEY.codemirrorTheme]: codemirrorTheme,
     [EXTENSION_GLOBAL_OPTIONS_KEY.codemirrorLineNumbers]: codemirrorLineNumbers,
+    [EXTENSION_GLOBAL_OPTIONS_KEY.dataImportExistBehavior]: dataImportExistBehavior,
   } = globalOptions;
   const { dispatch } = useStore();
 
@@ -79,6 +81,12 @@ export const Setting: React.SFC<{}> = props => {
 
   const colLayout1_2 = {
     md: 12,
+    sm: 24,
+    xs: 24,
+  };
+
+  const colLayout1_3 = {
+    md: 8,
     sm: 24,
     xs: 24,
   };
@@ -202,26 +210,54 @@ export const Setting: React.SFC<{}> = props => {
         content={
           <>
             <Row gutter={16}>
-              <Col {...colLayout1_2}>
-                <Button
-                  style={{ marginRight: 10 }}
-                  loading={exportLoading}
-                  onClick={() => {
-                    dispatch.setting.exportData();
-                  }}
-                >
-                  Export
-                </Button>
-                <Upload
-                  accept="application/json"
-                  beforeUpload={() => false}
-                  showUploadList={false}
-                  onChange={e => {
-                    dispatch.setting.importData({ file: e.file });
-                  }}
-                >
-                  <Button loading={importLoading}>Import</Button>
-                </Upload>
+              <Col {...colLayout1_3}>
+                <Form.Item {...formItemLayout}>
+                  <Button
+                    style={{ marginRight: 10 }}
+                    loading={exportLoading}
+                    onClick={() => {
+                      dispatch.setting.exportData();
+                    }}
+                  >
+                    Export
+                  </Button>
+                </Form.Item>
+              </Col>
+              <Col {...colLayout1_3}>
+                <Form.Item {...formItemLayout}>
+                  <Upload
+                    accept="application/json"
+                    beforeUpload={() => false}
+                    showUploadList={false}
+                    onChange={e => {
+                      dispatch.setting.importData({
+                        file: e.file,
+                        behavior: dataImportExistBehavior,
+                      });
+                    }}
+                  >
+                    <Button loading={importLoading}>Import</Button>
+                  </Upload>
+                </Form.Item>
+                <Form.Item {...formItemLayout} label="When exists">
+                  <Radio.Group
+                    value={dataImportExistBehavior}
+                    onChange={e =>
+                      dispatch.all.updateGlobalOptions({
+                        [EXTENSION_GLOBAL_OPTIONS_KEY.dataImportExistBehavior]:
+                          e.target.value,
+                      })
+                    }
+                  >
+                    {DATA_IMPORT_EXIST_BEHAVIOR_OPTIONS().map(
+                      ([value, label]) => (
+                        <Radio value={value} key={value}>
+                          {label}
+                        </Radio>
+                      ),
+                    )}
+                  </Radio.Group>
+                </Form.Item>
               </Col>
             </Row>
           </>

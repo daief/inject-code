@@ -56,6 +56,11 @@ export type FileSetDetail = FileSet & {
   sourceFileList: SourceFile[];
 };
 
+export enum DATA_IMPORT_EXIST_BEHAVIOR {
+  OVERRIDE = 'OVERRIDE',
+  SKIP = 'SKIP',
+}
+
 export enum EXTENSION_GLOBAL_OPTIONS_KEY {
   version = 'version',
   status = 'status',
@@ -64,6 +69,8 @@ export enum EXTENSION_GLOBAL_OPTIONS_KEY {
   useCodeEditor = 'useCodeEditor',
   codemirrorTheme = 'codemirrorTheme',
   codemirrorLineNumbers = 'codemirrorLineNumbers',
+
+  dataImportExistBehavior = 'dataImportExistBehavior',
 }
 
 export interface ExtensionGlobalOptions {
@@ -73,4 +80,5 @@ export interface ExtensionGlobalOptions {
   [EXTENSION_GLOBAL_OPTIONS_KEY.useCodeEditor]?: boolean;
   [EXTENSION_GLOBAL_OPTIONS_KEY.codemirrorTheme]?: string;
   [EXTENSION_GLOBAL_OPTIONS_KEY.codemirrorLineNumbers]?: boolean;
+  [EXTENSION_GLOBAL_OPTIONS_KEY.dataImportExistBehavior]?: DATA_IMPORT_EXIST_BEHAVIOR;
 }

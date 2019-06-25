@@ -1,5 +1,7 @@
+import { DATA_IMPORT_EXIST_BEHAVIOR } from '@/interfaces/entities';
 import { extendModel } from '@/interfaces/rematch';
 import { message } from 'antd';
+import { UploadFile } from 'antd/lib/upload/interface';
 import Dexie from 'dexie';
 import moment from 'moment';
 
@@ -46,7 +48,10 @@ export const model = extendModel({
         }
       },
       async importData(payload, __, { $db }) {
-        const { file } = payload;
+        const { file, behavior } = payload as {
+          file: UploadFile;
+          behavior: DATA_IMPORT_EXIST_BEHAVIOR;
+        };
         const hide = message.loading('Now importting data ...', 0);
         try {
           const fileReader = new FileReader();
@@ -59,7 +64,7 @@ export const model = extendModel({
               reject('Read file error');
             });
           });
-          fileReader.readAsText(file);
+          fileReader.readAsText(file as any);
           await promise;
 
           const importObject: any = JSON.parse(fileReader.result as string);
@@ -79,7 +84,9 @@ export const model = extendModel({
                 }
                 const count = await table.where({ id: value.id }).count();
                 if (count) {
-                  return table.update(value.id, value);
+                  return behavior === DATA_IMPORT_EXIST_BEHAVIOR.OVERRIDE
+                    ? table.update(value.id, value)
+                    : undefined;
                 }
                 return table.add(value);
               }),

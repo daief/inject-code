@@ -1,4 +1,5 @@
 import {
+  DATA_IMPORT_EXIST_BEHAVIOR,
   EXTENSION_GLOBAL_OPTIONS_KEY,
   ExtensionGlobalOptions,
   MATCH_TYPE,
@@ -60,6 +61,8 @@ const DEFAULT_OPTIONS: ExtensionGlobalOptions = {
   [EXTENSION_GLOBAL_OPTIONS_KEY.useCodeEditor]: false,
   [EXTENSION_GLOBAL_OPTIONS_KEY.codemirrorTheme]: 'material',
   [EXTENSION_GLOBAL_OPTIONS_KEY.codemirrorLineNumbers]: true,
+  [EXTENSION_GLOBAL_OPTIONS_KEY.dataImportExistBehavior]:
+    DATA_IMPORT_EXIST_BEHAVIOR.OVERRIDE,
 };
 export const EXTENSION_GLOBAL_OPTIONS_STORAGE_KEY =
   '__EXTENSION_GLOBAL_OPTIONS_STORAGE_KEY__';

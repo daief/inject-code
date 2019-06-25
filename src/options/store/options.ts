@@ -1,6 +1,7 @@
 import { NEW_THING_ID_PREFIX_MARK_REGEX } from '@/common/utils';
 import { hashHistory } from '@/components/hashHistory';
 import {
+  DATA_IMPORT_EXIST_BEHAVIOR,
   FileSetDetail,
   MATCH_TYPE,
   Rule,
@@ -249,4 +250,9 @@ export const RUN_AT_OPTIONS = () => [
   [RUN_AT.DOCUMENT_IDLE, 'Idle'],
   [RUN_AT.DOCUMENT_START, 'Document start'],
   [RUN_AT.DOCUMENT_END, 'Document end'],
+];
+
+export const DATA_IMPORT_EXIST_BEHAVIOR_OPTIONS = () => [
+  [DATA_IMPORT_EXIST_BEHAVIOR.OVERRIDE, 'Override'],
+  [DATA_IMPORT_EXIST_BEHAVIOR.SKIP, 'Skip'],
 ];
