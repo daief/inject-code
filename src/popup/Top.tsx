@@ -24,7 +24,15 @@ export const Top: React.SFC<{}> = () => {
 
   return (
     <PageHeader
-      title={DEFINE.displayName}
+      title={
+        <a
+          onClick={() =>
+            chrome.tabs.create({ url: `options.html` }, () => void 0)
+          }
+        >
+          {DEFINE.displayName}
+        </a>
+      }
       subTitle={DEFINE.version}
       extra={
         <ToggleStatus
