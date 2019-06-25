@@ -218,6 +218,7 @@ export const Setting: React.SFC<{}> = props => {
                     onClick={() => {
                       dispatch.setting.exportData();
                     }}
+                    icon="export"
                   >
                     Export
                   </Button>
@@ -236,7 +237,9 @@ export const Setting: React.SFC<{}> = props => {
                       });
                     }}
                   >
-                    <Button loading={importLoading}>Import</Button>
+                    <Button loading={importLoading} icon="import">
+                      Import
+                    </Button>
                   </Upload>
                 </Form.Item>
                 <Form.Item {...formItemLayout} label="When exists">
