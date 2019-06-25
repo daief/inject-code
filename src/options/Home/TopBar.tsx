@@ -1,5 +1,5 @@
 import { getHashQuery, updateHashQuery } from '@/components/hashHistory';
-import { STATUS } from '@/interfaces/entities';
+import { FileSetWithRule, STATUS } from '@/interfaces/entities';
 import { AnyFunc } from '@/interfaces/utils';
 import {
   Button,
@@ -24,11 +24,13 @@ const mapState = () =>
   useCallback<
     AnyFunc<{
       countOverview: any;
+      fileSetList: FileSetWithRule[];
       loading: boolean;
     }>
   >(
     _ => ({
       countOverview: _.options.countOverview,
+      fileSetList: _.all.fileSetList,
       loading: _.loading.effects.options.getOverviewInfo,
     }),
     [],
@@ -39,7 +41,7 @@ const FILTER_NAME_KEY = 'filterName';
 
 export const TopBar: React.SFC = () => {
   const { dispatch } = useStore();
-  const { countOverview } = useMappedState(mapState());
+  const { countOverview, fileSetList } = useMappedState(mapState());
   const [filter, _] = useState({
     [FILTER_STATUS_KEY]: getHashQuery(FILTER_STATUS_KEY) || '',
     [FILTER_NAME_KEY]: getHashQuery(FILTER_NAME_KEY) || '',
@@ -54,8 +56,11 @@ export const TopBar: React.SFC = () => {
 
   useEffect(() => {
     getFileSetList();
-    dispatch.options.getOverviewInfo();
   }, []);
+
+  useEffect(() => {
+    dispatch.options.getOverviewInfo();
+  }, [fileSetList]);
 
   const handleClickAddNew = () => {
     dispatch.options.addNewSet();
